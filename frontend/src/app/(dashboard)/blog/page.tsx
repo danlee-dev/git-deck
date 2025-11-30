@@ -57,7 +57,7 @@ export default function BlogPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-github-gray-600">로딩 중...</div>
+        <div className="text-github-gray-600 dark:text-github-gray-400">로딩 중...</div>
       </div>
     );
   }
@@ -66,8 +66,8 @@ export default function BlogPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-github-gray-900">블로그</h1>
-          <p className="mt-1 text-sm text-github-gray-600">
+          <h1 className="text-2xl font-semibold text-github-gray-900 dark:text-github-gray-100">블로그</h1>
+          <p className="mt-1 text-sm text-github-gray-600 dark:text-github-gray-400">
             블로그 포스트를 작성하고 관리하세요
           </p>
         </div>
@@ -78,8 +78,8 @@ export default function BlogPage() {
       </div>
 
       {posts.length === 0 ? (
-        <div className="card text-center py-12">
-          <p className="text-github-gray-600 mb-4">
+        <div className="card bg-white dark:bg-github-gray-800 border-github-gray-200 dark:border-github-gray-700 text-center py-12">
+          <p className="text-github-gray-600 dark:text-github-gray-400 mb-4">
             아직 포스트가 없습니다
           </p>
           <Link href="/blog/create" className="btn-primary">
@@ -89,41 +89,41 @@ export default function BlogPage() {
       ) : (
         <div className="space-y-4">
           {posts.map((post) => (
-            <div key={post.id} className="card hover:shadow-md transition-shadow">
+            <div key={post.id} className="card bg-white dark:bg-github-gray-800 border-github-gray-200 dark:border-github-gray-700 hover:shadow-md transition-shadow">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <Link href={`/blog/${post.id}`}>
-                    <h3 className="text-lg font-medium text-github-gray-900 hover:text-github-blue cursor-pointer">
+                    <h3 className="text-lg font-medium text-github-gray-900 dark:text-github-gray-100 hover:text-github-blue dark:hover:text-blue-400 cursor-pointer">
                       {post.title}
                     </h3>
                   </Link>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-github-gray-600">
+                  <div className="flex items-center gap-4 mt-2 text-sm text-github-gray-600 dark:text-github-gray-400">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
                       {formatDate(post.created_at)}
                     </div>
                     <span className={`px-2 py-0.5 rounded text-xs ${
                       post.status === 'published'
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-yellow-100 text-yellow-700'
+                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+                        : 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400'
                     }`}>
                       {post.status === 'published' ? '게시됨' : '임시저장'}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-github-gray-600 line-clamp-2">
+                  <p className="mt-2 text-sm text-github-gray-600 dark:text-github-gray-400 line-clamp-2">
                     {post.content.substring(0, 150)}...
                   </p>
                 </div>
                 <div className="flex items-center gap-2 ml-4">
                   <Link
                     href={`/blog/edit/${post.id}`}
-                    className="p-2 text-github-gray-600 hover:bg-github-gray-100 rounded-md transition-colors"
+                    className="p-2 text-github-gray-600 dark:text-github-gray-400 hover:bg-github-gray-100 dark:hover:bg-github-gray-700 rounded-md transition-colors"
                   >
                     <Edit className="w-4 h-4" />
                   </Link>
                   <button
                     onClick={() => handleDelete(post.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                    className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
