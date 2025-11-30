@@ -102,7 +102,7 @@ async def get_readme(
     if readme is None:
         raise HTTPException(status_code=404, detail="README not found")
 
-    return {"content": readme}
+    return readme
 
 @router.get("/sync/history", response_model=List[SyncHistoryResponse])
 def get_sync_history(

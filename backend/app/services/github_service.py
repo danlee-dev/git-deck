@@ -42,9 +42,9 @@ class GitHubService:
                 return response.json()
             return None
 
-    async def get_readme(self, owner: str, repo: str, branch: str = "main") -> Optional[str]:
+    async def get_readme(self, owner: str, repo: str, branch: str = "main") -> Optional[Dict[str, str]]:
         """
-        Fetch README content from a repository
+        Fetch README content from a repository and render it using GitHub API
         """
         async with httpx.AsyncClient() as client:
             response = await client.get(
@@ -58,9 +58,47 @@ class GitHubService:
                 import base64
                 try:
                     decoded = base64.b64decode(content).decode('utf-8')
-                    return decoded
+
+                    # Render markdown using GitHub API
+                    render_response = await client.post(
+                        f"{self.BASE_URL}/markdown",
+                        headers={
+                            "Authorization": f"Bearer {self.access_token}",
+                            "Accept": "application/vnd.github.v3+json",
+                            "Content-Type": "application/json"
+                        },
+                        json={
+                            "text": decoded,
+                            "mode": "gfm",
+                            "context": f"{owner}/{repo}"
+                        }
+                    )
+
+                    if render_response.status_code == 200:
+                        return {
+                            "content": decoded,
+                            "html": render_response.text
+                        }
+                    else:
+                        return {
+                            "content": decoded,
+                            "html": None
+                        }
                 except Exception:
                     return None
+            return None
+
+    async def get_user_info(self) -> Optional[Dict[str, Any]]:
+        """
+        Fetch authenticated user's information
+        """
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{self.BASE_URL}/user",
+                headers=self.headers
+            )
+            if response.status_code == 200:
+                return response.json()
             return None
 
     async def sync_repositories(self, user: User, db: Session) -> Dict[str, Any]:
@@ -68,6 +106,8 @@ class GitHubService:
         Sync user's GitHub repositories to database
         """
         repos = await self.get_user_repositories()
+        github_user = await self.get_user_info()
+        github_username = github_user.get("login") if github_user else None
 
         synced_count = 0
         updated_count = 0
@@ -78,6 +118,16 @@ class GitHubService:
                 GitHubRepository.github_repo_id == str(repo_data["id"])
             ).first()
 
+            is_profile_repo = (
+                github_username and
+                repo_data["name"].lower() == github_username.lower()
+            )
+
+            github_updated_at = repo_data.get("updated_at")
+            if github_updated_at:
+                from dateutil import parser
+                github_updated_at = parser.parse(github_updated_at)
+
             repo_info = {
                 "user_id": user.id,
                 "github_repo_id": str(repo_data["id"]),
@@ -87,6 +137,7 @@ class GitHubService:
                 "url": repo_data["html_url"],
                 "homepage": repo_data.get("homepage"),
                 "is_private": repo_data["private"],
+                "is_featured": is_profile_repo,
                 "stars_count": repo_data["stargazers_count"],
                 "forks_count": repo_data["forks_count"],
                 "language": repo_data.get("language"),
@@ -98,13 +149,16 @@ class GitHubService:
                 for key, value in repo_info.items():
                     if key != "user_id":
                         setattr(existing_repo, key, value)
-                existing_repo.updated_at = datetime.utcnow()
+                if github_updated_at:
+                    existing_repo.updated_at = github_updated_at
+                else:
+                    existing_repo.updated_at = datetime.utcnow()
                 updated_count += 1
             else:
                 new_repo = GitHubRepository(
                     id=str(uuid.uuid4()),
                     created_at=datetime.utcnow(),
-                    updated_at=datetime.utcnow(),
+                    updated_at=github_updated_at if github_updated_at else datetime.utcnow(),
                     **repo_info
                 )
                 db.add(new_repo)
