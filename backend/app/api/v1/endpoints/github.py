@@ -16,13 +16,13 @@ async def sync_repositories(
     """
     Sync user's GitHub repositories
     """
-    if not current_user.access_token:
+    if not current_user.github_access_token:
         raise HTTPException(
             status_code=400,
             detail="No GitHub access token found. Please reconnect your GitHub account."
         )
 
-    github_service = GitHubService(current_user.access_token)
+    github_service = GitHubService(current_user.github_access_token)
 
     try:
         result = await github_service.sync_repositories(current_user, db)
@@ -35,9 +35,9 @@ async def sync_repositories(
         sync_history = SyncHistory(
             id=str(__import__('uuid').uuid4()),
             user_id=current_user.id,
-            sync_type="repository_sync",
+            target_type="repository_sync",
             status="failed",
-            details={"error": str(e)},
+            error_detail=str(e),
             created_at=__import__('datetime').datetime.utcnow()
         )
         db.add(sync_history)
@@ -57,7 +57,7 @@ def get_repositories(
     """
     repos = db.query(GitHubRepository).filter(
         GitHubRepository.user_id == current_user.id
-    ).order_by(GitHubRepository.stars.desc()).offset(skip).limit(limit).all()
+    ).order_by(GitHubRepository.stars_count.desc()).offset(skip).limit(limit).all()
 
     return repos
 
@@ -89,13 +89,13 @@ async def get_readme(
     """
     Get README content from a GitHub repository
     """
-    if not current_user.access_token:
+    if not current_user.github_access_token:
         raise HTTPException(
             status_code=400,
             detail="No GitHub access token found"
         )
 
-    github_service = GitHubService(current_user.access_token)
+    github_service = GitHubService(current_user.github_access_token)
 
     readme = await github_service.get_readme(owner, repo)
 

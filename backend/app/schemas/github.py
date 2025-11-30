@@ -5,17 +5,18 @@ from datetime import datetime
 class GitHubRepositoryResponse(BaseModel):
     id: str
     user_id: str
-    repo_name: str
+    github_repo_id: str
+    name: str
     full_name: str
     description: Optional[str]
-    html_url: str
-    clone_url: str
-    default_branch: str
+    url: str
+    homepage: Optional[str]
     is_private: bool
-    stars: int
-    forks: int
+    is_featured: bool
+    stars_count: int
+    forks_count: int
     language: Optional[str]
-    topics: list
+    topics: Optional[list]
     created_at: datetime
     updated_at: datetime
     last_synced_at: Optional[datetime]
@@ -26,9 +27,13 @@ class GitHubRepositoryResponse(BaseModel):
 class SyncHistoryResponse(BaseModel):
     id: str
     user_id: str
-    sync_type: str
+    target_type: str
+    target_id: Optional[str]
     status: str
-    details: Optional[dict]
+    error_code: Optional[str]
+    error_detail: Optional[str]
+    triggered_by: Optional[str]
+    duration_ms: Optional[int]
     created_at: datetime
 
     class Config:

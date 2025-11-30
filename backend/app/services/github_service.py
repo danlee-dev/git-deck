@@ -75,20 +75,20 @@ class GitHubService:
         for repo_data in repos:
             existing_repo = db.query(GitHubRepository).filter(
                 GitHubRepository.user_id == user.id,
-                GitHubRepository.repo_name == repo_data["name"]
+                GitHubRepository.github_repo_id == str(repo_data["id"])
             ).first()
 
             repo_info = {
                 "user_id": user.id,
-                "repo_name": repo_data["name"],
+                "github_repo_id": str(repo_data["id"]),
+                "name": repo_data["name"],
                 "full_name": repo_data["full_name"],
                 "description": repo_data.get("description"),
-                "html_url": repo_data["html_url"],
-                "clone_url": repo_data["clone_url"],
-                "default_branch": repo_data.get("default_branch", "main"),
+                "url": repo_data["html_url"],
+                "homepage": repo_data.get("homepage"),
                 "is_private": repo_data["private"],
-                "stars": repo_data["stargazers_count"],
-                "forks": repo_data["forks_count"],
+                "stars_count": repo_data["stargazers_count"],
+                "forks_count": repo_data["forks_count"],
                 "language": repo_data.get("language"),
                 "topics": repo_data.get("topics", []),
                 "last_synced_at": datetime.utcnow()
@@ -115,13 +115,8 @@ class GitHubService:
         sync_history = SyncHistory(
             id=str(uuid.uuid4()),
             user_id=user.id,
-            sync_type="repository_sync",
+            target_type="repository_sync",
             status="success",
-            details={
-                "synced": synced_count,
-                "updated": updated_count,
-                "total": len(repos)
-            },
             created_at=datetime.utcnow()
         )
         db.add(sync_history)
