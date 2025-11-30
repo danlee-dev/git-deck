@@ -1,0 +1,20 @@
+CLAUDE.md
+.DS_Store
+__pycache__/
+*.pyc
+.vscode/
+logs/
+temp_imgs/
+
+# Backend Environment
+backend/.env
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+
+# Frontend Environment
+frontend/.env.local
+frontend/.env
+frontend/node_modules/
+frontend/.next/
+frontend/out/
