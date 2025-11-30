@@ -1,41 +1,104 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+import axios from 'axios';
 
-export const apiClient = {
-  baseURL: API_URL,
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8006';
 
-  async get(endpoint: string) {
-    const response = await fetch(`${API_URL}${endpoint}`);
-    return response.json();
+export const api = axios.create({
+  baseURL: `${API_URL}/api/v1`,
+  headers: {
+    'Content-Type': 'application/json',
   },
+});
 
-  async post(endpoint: string, data: any) {
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    return response.json();
+// Request interceptor to add auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
   },
+  (error) => Promise.reject(error)
+);
 
-  async put(endpoint: string, data: any) {
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    return response.json();
+// Response interceptor to handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      localStorage.removeItem('access_token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Auth API
+export const authAPI = {
+  register: (data: { username: string; email: string; password: string }) =>
+    api.post('/auth/register', data),
+  login: (data: { email: string; password: string }) =>
+    api.post('/auth/login', data),
+  me: () => api.get('/auth/me'),
+  connectGithub: (code: string) =>
+    api.post('/auth/connect-github', null, { params: { code } }),
+  deleteAccount: () => api.delete('/auth/account'),
+  restoreAccount: (data: { email: string; password: string }) =>
+    api.post('/auth/account/restore', data),
+};
+
+// Users API
+export const usersAPI = {
+  list: () => api.get('/users'),
+  get: (id: string) => api.get(`/users/${id}`),
+  update: (id: string, data: any) => api.put(`/users/${id}`, data),
+  delete: (id: string) => api.delete(`/users/${id}`),
+};
+
+// Profiles API
+export const profilesAPI = {
+  list: () => api.get('/profiles'),
+  create: (data: any) => api.post('/profiles', data),
+  get: (id: string) => api.get(`/profiles/${id}`),
+  update: (id: string, data: any) => api.put(`/profiles/${id}`, data),
+  delete: (id: string) => api.delete(`/profiles/${id}`),
+  syncToReadme: (id: string) => api.post(`/profiles/${id}/sync-to-readme`),
+};
+
+// Blocks API
+export const blocksAPI = {
+  list: () => api.get('/blocks'),
+  create: (data: any) => api.post('/blocks', data),
+  update: (id: string, data: any) => api.put(`/blocks/${id}`, data),
+  delete: (id: string) => api.delete(`/blocks/${id}`),
+};
+
+// Blog API
+export const blogAPI = {
+  posts: {
+    list: () => api.get('/posts'),
+    create: (data: any) => api.post('/posts', data),
+    get: (id: string) => api.get(`/posts/${id}`),
+    update: (id: string, data: any) => api.put(`/posts/${id}`, data),
+    delete: (id: string) => api.delete(`/posts/${id}`),
   },
-
-  async delete(endpoint: string) {
-    const response = await fetch(`${API_URL}${endpoint}`, {
-      method: 'DELETE',
-    });
-    return response.json();
+  series: {
+    list: () => api.get('/series'),
+    create: (data: any) => api.post('/series', data),
+    get: (id: string) => api.get(`/series/${id}`),
+    update: (id: string, data: any) => api.put(`/series/${id}`, data),
+    delete: (id: string) => api.delete(`/series/${id}`),
   },
 };
 
-export default apiClient;
+// GitHub API
+export const githubAPI = {
+  syncRepositories: () => api.post('/github/sync/repositories'),
+  listRepositories: () => api.get('/github/repositories'),
+  getRepository: (id: string) => api.get(`/github/repositories/${id}`),
+  getReadme: (owner: string, repo: string) =>
+    api.get(`/github/readme/${owner}/${repo}`),
+  syncHistory: () => api.get('/github/sync/history'),
+};
+
+export default api;

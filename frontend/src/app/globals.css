@@ -1,3 +1,69 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Pretendard Font */
+@font-face {
+  font-family: 'Pretendard Variable';
+  font-weight: 45 920;
+  font-style: normal;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@layer base {
+  * {
+    @apply border-github-gray-300;
+  }
+
+  body {
+    @apply bg-white text-github-gray-900 antialiased;
+    font-feature-settings: 'tnum' 1, 'ss01' 1;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-github-blue focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none px-4 py-2.5 text-sm;
+  }
+
+  .btn-primary {
+    @apply btn bg-github-green text-white hover:bg-github-green/90;
+  }
+
+  .btn-secondary {
+    @apply btn bg-github-gray-100 text-github-gray-900 hover:bg-github-gray-200;
+  }
+
+  .btn-ghost {
+    @apply btn hover:bg-github-gray-100;
+  }
+
+  .btn-github {
+    @apply btn bg-github-gray-900 text-white hover:bg-github-gray-800;
+  }
+
+  .input {
+    @apply flex h-10 w-full rounded-md border border-github-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-github-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-github-blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .textarea {
+    @apply flex min-h-[80px] w-full rounded-md border border-github-gray-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-github-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-github-blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .card {
+    @apply rounded-lg border border-github-gray-200 bg-white p-6 shadow-sm;
+  }
+}
