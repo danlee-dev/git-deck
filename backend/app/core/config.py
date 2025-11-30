@@ -2,8 +2,9 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "DevDeck"
+    PROJECT_NAME: str = "Git Deck"
     API_VERSION: str = "v1"
+    ENVIRONMENT: str = "development"  # development or production
 
     HOST: str = "0.0.0.0"
     PORT: int = 8000
