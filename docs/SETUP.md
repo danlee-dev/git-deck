@@ -1,4 +1,63 @@
-# 개발 환경 설정 가이드
+# Git Deck - 개발 환경 설정 가이드
+
+> 자세한 설정 가이드는 [GETTING_STARTED.md](GETTING_STARTED.md)를 참고하세요.
+
+## 빠른 시작
+
+### 1. 저장소 클론
+
+```bash
+git clone https://github.com/your-username/git-deck.git
+cd git-deck
+```
+
+### 2. 백엔드 설정
+
+```bash
+cd backend
+
+# 가상환경 생성 및 활성화
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# 패키지 설치
+pip install -r requirements.txt
+
+# 환경 변수 설정
+cp .env.example .env
+# .env 파일 수정 (DATABASE_URL, GITHUB_CLIENT_ID 등)
+
+# 개발 환경 자동 설정 (마이그레이션 + 테스트 데이터)
+python setup_dev.py
+
+# 서버 실행
+uvicorn app.main:app --host 0.0.0.0 --port 8006 --reload
+```
+
+### 3. 프론트엔드 설정
+
+```bash
+cd frontend
+
+# 패키지 설치
+npm install
+
+# 환경 변수 설정
+cp .env.example .env.local
+# .env.local 파일 수정
+
+# 개발 서버 실행
+npm run dev
+```
+
+### 4. 테스트 계정
+
+개발 환경 설정 후 다음 계정으로 로그인 가능:
+
+- **Email**: `devuser1@gitdeck.dev`
+- **Email**: `devuser2@gitdeck.dev` (GitHub 연결됨)
+- **Email**: `devuser3@gitdeck.dev` (GitHub 연결됨)
+- **Password**: `password123`
 
 ## 환경 변수 설정
 
