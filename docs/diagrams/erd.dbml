@@ -1,0 +1,173 @@
+// DevDeck Database Schema - Refined Version
+
+Table users {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  github_id varchar(100) [unique, null, note: 'Nullable - users can register with email only']
+  username varchar(255) [unique, not null]
+  email varchar(255) [unique, not null]
+  password_hash varchar(255) [null, note: 'For email/password authentication']
+  avatar_url text
+  github_access_token text [note: 'Encrypted storage required']
+  github_webhook_id varchar(100) [note: 'GitHub webhook ID for auto-sync']
+  is_github_connected boolean [default: false, note: 'Whether user has connected GitHub account']
+  is_active boolean [default: true]
+  deleted_at timestamp [null, note: 'Soft delete - stored for 7 days before permanent deletion']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    github_id
+    username
+  }
+}
+
+Table profiles {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null]
+  slug varchar(255) [unique, not null, note: 'devdeck.io/@username']
+  display_name varchar(255)
+  bio text
+  theme_config jsonb [note: 'Colors, fonts, layout preferences']
+  is_public boolean [default: true]
+  custom_domain varchar(255) [unique]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    slug
+    custom_domain
+  }
+}
+
+Table blocks {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  profile_id varchar(36) [ref: > profiles.id, not null]
+  type varchar(50) [not null, note: 'project_card, tech_stack, blog_feed, github_stats, custom_markdown']
+  title varchar(255)
+  content jsonb [note: 'Block content and configuration']
+  order_index integer [not null]
+  width integer [default: 12, note: 'Grid width (1-12)']
+  is_visible boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    profile_id
+    (profile_id, order_index)
+    type
+  }
+}
+
+Table blog_posts {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null]
+  series_id varchar(36) [ref: > series.id]
+  title varchar(500) [not null]
+  slug varchar(500) [not null]
+  content_md text [not null]
+  excerpt text
+  cover_image text
+  tags jsonb
+  status varchar(20) [default: 'draft', note: 'draft, published, archived']
+  published_at timestamp
+  view_count integer [default: 0]
+  github_path varchar(500) [note: 'GitHub file path for sync']
+  github_sha varchar(100) [note: 'Git commit SHA for conflict detection']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    series_id
+    (user_id, slug) [unique]
+    status
+    published_at
+  }
+}
+
+Table series {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null]
+  title varchar(255) [not null]
+  slug varchar(255) [not null]
+  description text
+  thumbnail text
+  is_public boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    (user_id, slug) [unique]
+  }
+}
+
+Table github_repositories {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null]
+  github_repo_id varchar(100) [unique, not null]
+  name varchar(255) [not null]
+  full_name varchar(500) [not null]
+  description text
+  url text [not null]
+  homepage text
+  language varchar(100)
+  stars_count integer [default: 0]
+  forks_count integer [default: 0]
+  is_private boolean [default: false]
+  is_featured boolean [default: false]
+  topics jsonb
+  last_synced_at timestamp
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    github_repo_id
+    is_featured
+  }
+}
+
+Table sync_history {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null]
+  target_type varchar(50) [not null, note: 'profile_readme, blog_post, repository']
+  target_id varchar(36)
+  status varchar(20) [not null, note: 'success, failed, partial']
+  error_code varchar(50)
+  error_detail text
+  triggered_by varchar(50) [note: 'user_manual, webhook, schedule']
+  duration_ms integer
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    target_type
+    status
+    created_at
+  }
+
+  Note: 'System sync logs for debugging and monitoring'
+}
+
+Table webhooks {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null]
+  service varchar(50) [not null, note: 'discord, slack, custom']
+  event_type varchar(100) [not null, note: 'blog_publish, repo_star, profile_update']
+  target_url text [not null]
+  secret varchar(255)
+  is_active boolean [default: true]
+  last_triggered_at timestamp
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    event_type
+    is_active
+  }
+
+  Note: 'Outgoing webhooks for user notifications'
+}
