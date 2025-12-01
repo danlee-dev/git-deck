@@ -109,8 +109,15 @@ git-deck/
 │   └── .env.example
 │
 └── docs/                       # 문서
-    ├── architecture-overview.md
-    └── setup.md
+    ├── architecture/           # 아키텍처 및 설계
+    │   ├── architecture-overview.md
+    │   └── diagrams/
+    ├── guides/                 # 설치 및 시작 가이드
+    │   ├── GETTING_STARTED.md
+    │   └── SETUP.md
+    └── roadmap/                # 개발 계획 및 로드맵
+        ├── 2025-12-02-implementation-roadmap.md
+        └── proposal.md
 ```
 
 ## 기술 스택
