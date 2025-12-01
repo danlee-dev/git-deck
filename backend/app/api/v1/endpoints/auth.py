@@ -105,15 +105,37 @@ async def login(credentials: EmailLogin, db: Session = Depends(get_db_session)):
     )
 
 @router.get("/me")
-async def get_current_user_info(current_user: User = Depends(get_current_active_user)):
+async def get_current_user_info(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db_session)
+):
     """
     Get current user information
     """
+    if current_user.is_github_connected and not current_user.github_username and current_user.github_access_token:
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    "https://api.github.com/user",
+                    headers={
+                        "Authorization": f"Bearer {current_user.github_access_token}",
+                        "Accept": "application/json",
+                    },
+                )
+                if response.status_code == 200:
+                    github_user = response.json()
+                    current_user.github_username = github_user["login"]
+                    db.commit()
+                    db.refresh(current_user)
+        except Exception as e:
+            print(f"Failed to fetch GitHub username: {e}")
+
     return {
         "id": current_user.id,
         "username": current_user.username,
         "email": current_user.email,
         "avatar_url": current_user.avatar_url,
+        "github_username": current_user.github_username,
         "is_github_connected": current_user.is_github_connected,
         "is_active": current_user.is_active,
         "created_at": current_user.created_at
@@ -250,6 +272,7 @@ async def github_callback(code: str, db: Session = Depends(get_db_session)):
     ).first()
 
     if existing_user:
+        existing_user.github_username = github_user["login"]
         existing_user.github_access_token = access_token
         existing_user.is_github_connected = True
         existing_user.updated_at = datetime.utcnow()
@@ -257,11 +280,16 @@ async def github_callback(code: str, db: Session = Depends(get_db_session)):
         db.refresh(existing_user)
         user = existing_user
     else:
+        email = github_user.get("email")
+        if not email:
+            email = f"{github_user['login']}@users.noreply.github.com"
+
         new_user = User(
             id=str(uuid.uuid4()),
             github_id=str(github_user["id"]),
+            github_username=github_user["login"],
             username=github_user["login"],
-            email=github_user.get("email"),
+            email=email,
             avatar_url=github_user.get("avatar_url"),
             github_access_token=access_token,
             is_github_connected=True,
