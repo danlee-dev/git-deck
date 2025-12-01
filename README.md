@@ -1,8 +1,8 @@
-# Git Deck
+# GitDeck
 
 <div align="center">
-<h1>Git Deck</h1>
-<p>AI 기반 개발자 브랜딩 플랫폼</p>
+<h1>GitDeck</h1>
+<p>GitHub Profile README Editor with Real-time Preview</p>
 </div>
 
 > 개발기간: 2025.01 ~
@@ -11,149 +11,192 @@
 
 ## 프로젝트 개요
 
-한 번 작성하면 모든 곳에 자동 동기화. AI가 관리하는 개발자 프로필.
+GitDeck은 GitHub 프로필 README를 시각적으로 편집하고 실시간 미리보기를 제공하는 웹 애플리케이션입니다. 140개 이상의 기술 뱃지와 스니펫 라이브러리를 통해 전문적인 프로필을 빠르게 구성할 수 있으며, GitHub과의 양방향 동기화로 편집한 내용을 즉시 배포할 수 있습니다.
 
-Git Deck은 GitHub 프로필과 블로그 관리를 자동화하는 차세대 개발자 브랜딩 플랫폼입니다. Notion처럼 직관적인 드래그 앤 드롭 인터페이스로 디자인 감각 없이도 전문적인 프로필을 만들 수 있으며, 강력한 자동화 기능을 제공합니다.
+### 현재 구현된 기능
 
-개발자는 코딩에만 집중하면 프로필과 블로그가 자동으로 업데이트됩니다. AI 기능이 커밋 로그를 분석하여 블로그 글과 프로젝트 설명을 자동으로 생성해주므로 문서화 작업이 간편합니다.
+- **실시간 마크다운 에디터**: CodeMirror 6 기반, GitHub 렌더링과 동일한 미리보기
+- **클릭-투-소스 네비게이션**: 미리보기 요소 클릭 시 에디터의 해당 위치로 이동
+- **Quick Insert 패널**: 6개 Stats 위젯, 5개 섹션 템플릿, 140+ 기술 뱃지
+- **GitHub OAuth 인증**: 원클릭 로그인 및 계정 연동
+- **양방향 README 동기화**: Load/Save with SHA-based 충돌 감지
+- **다크/라이트 테마**: 시스템 설정 연동 지원
+- **로컬 자동 저장**: localStorage 기반 세션 연속성
 
 ## 핵심 기능
 
-### 에디터 (Notion-like Builder)
+### Profile Editor
 
-직관적인 드래그 앤 드롭 인터페이스를 제공하는 노코드 프로필 빌더입니다.
+CodeMirror 6 기반의 마크다운 에디터와 실시간 GitHub 렌더링 미리보기를 제공합니다.
 
-- **그리드 시스템**: 드래그 앤 드롭으로 README 레이아웃 배치 (2단, 3단 구성)
-- **실시간 미리보기**: GitHub Dark/Light 모드에서의 실시간 프리뷰
-- **스마트 블록**:
-  - `프로젝트 카드`: 레포지토리에서 스타 수, 언어, 설명 자동 로딩
-  - `기술 스택`: 기술 아이콘 검색 및 자동 배치
-  - `블로그 피드`: 최근 블로그 글 자동 표시
-  - `활동 그래프`: GitHub 잔디 그래프 외 상세 활동 분석 차트
+- **3단 레이아웃**: Editor | Preview | Quick Insert 패널 구성
+- **실시간 미리보기**: GitHub Markdown API를 사용한 동일한 렌더링
+- **클릭-투-소스**: 미리보기 클릭 시 에디터의 해당 소스 위치로 자동 스크롤
+- **스마트 리스트**: 번호/불릿 리스트 자동 연속, 블록인용 자동 연속
+- **테마 연동**: 다크/라이트 모드 자동 전환
 
-### 동기화 엔진 (GitHub Automation)
+### Quick Insert Panel
 
-GitHub과의 원활한 통합을 위한 강력한 자동화 엔진입니다.
+140개 이상의 스니펫과 뱃지를 제공하는 빠른 삽입 패널입니다.
 
-- **실시간 배포**: 저장 버튼 클릭 시 GitHub API를 통해 README.md 자동 업데이트
-- **웹훅 리스너**:
-  - 새 레포지토리 생성 시 '최근 프로젝트' 섹션에 자동 추가
-  - 커밋 이벤트 발생 시 '최근 활동' 섹션 텍스트 자동 갱신
-- **이미지 호스팅**: 동적으로 생성된 이미지(뱃지, 차트)를 위한 영구 URL 제공
+- **Stats (6개)**:
+  - Capsule Render (동적 헤더)
+  - GitHub Stats Card (테마 인식 `<picture>` 태그)
+  - Streak Stats (기여 연속 기록)
+  - Activity Graph (기여 타임라인)
+  - Top Languages (언어 비율)
+  - Profile Views Counter
 
-### 통합 개발 로그 (CMS)
+- **Sections (5개)**: About Me, Tech Stack, Projects, Awards, Contact 템플릿
 
-별도의 블로그 관리를 원하지 않는 개발자를 위한 내장 블로깅 시스템입니다.
+- **Badges (140+)**: 언어, 프레임워크, DB, 클라우드, 도구 등 카테고리별 검색
 
-- **마크다운 우선**: 개발자 친화적인 마크다운 에디터
-- **레포지토리 백업 저장**: 발행된 게시물을 플랫폼 DB에 저장하고 GitHub `blog` 레포지토리에 `.md` 파일로 자동 푸시
-- **시리즈 관리**: 게시물을 시리즈/컬렉션으로 구성 (예: "자료구조 정복하기")
+- **Repository Selector**: GitHub 레포지토리 검색 및 카드/링크 삽입
 
-## AI 기능
+### GitHub Integration
 
-생산성 향상을 위한 FastAPI와 LLM 기반 AI 에이전트 통합입니다.
+GitHub OAuth 2.0 인증과 양방향 README 동기화를 제공합니다.
+
+- **OAuth 인증**: user, repo, read:org 스코프
+- **README 동기화**: `{username}/{username}` 레포지토리 자동 감지
+- **충돌 감지**: SHA 기반 외부 변경 감지 및 해결 UI
+- **레포지토리 동기화**: stars, forks, language, topics 메타데이터 저장
+
+## AI 기능 (Planned)
+
+생산성 향상을 위한 AI 에이전트 통합을 계획 중입니다.
 
 ### Repo-to-Showcase (프로젝트 설명 생성기)
 
-- **문제**: 레포지토리는 만들었는데 귀찮아서 README.md가 비어있음
-- **해결**: AI가 코드 구조와 주요 함수를 분석하여 전문적인 프로젝트 설명 생성 (개요, 설치 방법, 기술 스택)
-- **트리거**: 프로젝트 블록 추가 시 "AI로 설명 생성하기" 버튼
+- 코드 구조 분석을 통한 프로젝트 설명 자동 생성
+- 개요, 설치 방법, 기술 스택 등 README 섹션 생성
 
 ### Commit-to-Blog (회고 자동화)
 
-- **문제**: 코딩은 했는데 블로그 쓸 시간이 없음
-- **해결**: AI가 지난 주의 커밋 히스토리를 분석하여 주간 개발 회고록 초안 작성
-- **예시**: "이번 주는 주로 Next.js 최적화 작업을 하셨네요. `Image` 컴포넌트 적용 경험을 글로 써드릴까요?"
+- 커밋 히스토리 분석을 통한 주간 개발 회고록 초안 작성
+- 작업 내용 요약 및 블로그 포스트 제안
 
-### Smart Translator (글로벌 진출)
+### Smart Translator (다국어 지원)
 
-- **해결**: 한글로 프로필/블로그 작성 후 클릭 한 번으로 영문 버전 `README.en.md` 생성, 언어 전환 뱃지 포함
+- 한글 프로필/블로그 작성 후 영문 버전 자동 생성
+- 언어 전환 뱃지 자동 삽입
 
 ## 프로젝트 구조
 
 ```plaintext
 git-deck/
-├── backend/              # FastAPI 백엔드
+├── backend/                    # FastAPI 백엔드
 │   ├── app/
-│   │   ├── api/          # API 라우트
-│   │   ├── core/         # 핵심 설정
-│   │   ├── models/       # 데이터베이스 모델
-│   │   ├── services/     # 비즈니스 로직
-│   │   └── utils/        # 유틸리티 함수
+│   │   ├── api/v1/endpoints/   # API 엔드포인트 (auth, blocks, github, profiles, users, blog)
+│   │   ├── core/               # 설정 및 보안 (config.py, security.py)
+│   │   ├── models/             # SQLAlchemy 모델 (8개 테이블)
+│   │   ├── schemas/            # Pydantic 스키마
+│   │   └── services/           # GitHub API, 동기화 서비스
+│   ├── alembic/                # DB 마이그레이션
 │   ├── requirements.txt
 │   └── .env.example
 │
-├── frontend/             # Next.js 프론트엔드
+├── frontend/                   # Next.js 프론트엔드
 │   ├── src/
-│   │   ├── app/          # Next.js App Router
-│   │   ├── components/   # React 컴포넌트
-│   │   ├── lib/          # 라이브러리 및 유틸리티
-│   │   ├── hooks/        # 커스텀 React 훅
-│   │   └── types/        # TypeScript 타입
-│   ├── public/
+│   │   ├── app/                # App Router (auth, dashboard, profile, github, blog)
+│   │   ├── components/
+│   │   │   ├── layout/         # Header, Footer, Navigation
+│   │   │   └── profile-editor/ # ProfilePreview, MarkdownEditor, SnippetsPanel
+│   │   ├── lib/                # API 클라이언트, 마크다운 유틸리티
+│   │   ├── store/              # Zustand 스토어 (auth, theme, profileEditor)
+│   │   └── types/              # TypeScript 타입 정의
 │   ├── package.json
 │   └── .env.example
 │
-└── docs/                 # 문서
-    └── proposal.md
+└── docs/                       # 문서
+    ├── architecture-overview.md
+    └── setup.md
 ```
 
-## 기술 스택 및 아키텍처
+## 기술 스택
 
-웹 서비스를 위한 확장 가능한 아키텍처로, 향후 데스크톱 앱 확장을 고려한 설계입니다.
+### Frontend
 
-### 프론트엔드 (웹 & 데스크톱 뷰)
+| 기술 | 용도 |
+|------|------|
+| Next.js 14+ | App Router 기반 React 프레임워크 |
+| TypeScript | 타입 안전성 |
+| Tailwind CSS | 유틸리티 기반 스타일링 |
+| Zustand | 경량 상태 관리 (auth, theme, editor) |
+| CodeMirror 6 | 마크다운 에디터 |
+| Axios | HTTP 클라이언트 |
+| Lucide React | 아이콘 라이브러리 |
 
-- **프레임워크**: Next.js 14+ (App Router)
-- **상태 관리**: Zustand (블록 배치 상태 관리에 최적화된 경량 라이브러리)
-- **UI 라이브러리**: Tailwind CSS, Shadcn/ui, dnd-kit (드래그 앤 드롭)
-- **에디터**: Tiptap 또는 Milkdown (Notion 스타일 에디터)
+### Backend
 
-### 백엔드 (API & AI 에이전트)
+| 기술 | 용도 |
+|------|------|
+| FastAPI | Python 비동기 웹 프레임워크 |
+| SQLAlchemy | ORM |
+| PostgreSQL | 관계형 데이터베이스 |
+| Alembic | DB 마이그레이션 |
+| python-jose | JWT 토큰 |
+| bcrypt | 비밀번호 해싱 |
+| httpx | 비동기 HTTP 클라이언트 (GitHub API) |
 
-- **프레임워크**: FastAPI (Python) - AI 라이브러리(LangChain, OpenAI/Anthropic SDK)와의 뛰어난 호환성
-- **데이터베이스**: PostgreSQL (Supabase 권장 - Auth, DB, Realtime 통합)
-- **이미지 생성**: Satori (Python 래퍼 또는 Node.js 마이크로서비스를 통한 SVG 생성)
+### Markdown Processing
 
-### 데스크톱 앱 (향후)
-
-- **기술**: Electron 또는 Tauri
-- **전략**: Next.js 프론트엔드를 그대로 패키징 (`next export`)
-- **핵심 기능**: 로컬 폴더 모니터링 - 파일 저장 감지 후 프로필 업데이트 제안
+| 기술 | 용도 |
+|------|------|
+| unified | 마크다운 파싱 프레임워크 |
+| remark-parse | 마크다운 파서 |
+| remark-gfm | GitHub Flavored Markdown 지원 |
+| unist-util-visit | AST 순회 유틸리티 |
 
 ## 시스템 아키텍처
 
 ```plaintext
-사용자 액션
-    ↓
-Next.js (웹 UI)
-    ↓ JSON
-FastAPI (백엔드)
-    ├─→ 데이터베이스 (PostgreSQL)
-    ├─→ 마크다운 생성기 (JSON → Markdown)
-    └─→ AI 에이전트 (LLM) [선택]
-         ↓
-GitHub API
-    ↓
-GitHub 프로필 업데이트
++-------------------+     +-------------------+     +-------------------+
+|   Next.js App     |<--->|   FastAPI Server  |<--->|   PostgreSQL DB   |
+|   (Frontend)      |     |   (Backend)       |     |                   |
++-------------------+     +-------------------+     +-------------------+
+        |                         |
+        v                         v
++-------------------+     +-------------------+
+|   LocalStorage    |     |   GitHub API      |
+|   (Client State)  |     |   (OAuth + REST)  |
++-------------------+     +-------------------+
 ```
+
+### Data Flow
+
+1. **Authentication**: GitHub OAuth 또는 이메일/비밀번호 인증
+2. **Editor**: 마크다운 편집 -> GitHub API 렌더링 -> 실시간 미리보기
+3. **Sync**: SHA 기반 충돌 감지 후 GitHub 레포지토리에 커밋
+4. **State**: localStorage를 통한 세션 연속성 유지
 
 ## 개발 로드맵
 
-### Phase 1: 에디터 (웹 버전)
+### Phase 1: Core Editor (Current)
 
-- **기능**: GitHub 로그인, 기본 블록(텍스트, 이미지, 헤더), 프로젝트 가져오기, README 내보내기(푸시)
-- **목표**: 가치 증명 - "손코딩보다 쉬운 README 제작"
+- [x] GitHub OAuth 인증
+- [x] CodeMirror 마크다운 에디터
+- [x] GitHub API 실시간 렌더링
+- [x] 클릭-투-소스 네비게이션
+- [x] Quick Insert 패널 (Stats, Sections, Badges)
+- [x] README 양방향 동기화
+- [x] 다크/라이트 테마 지원
+- [ ] 뱃지 요소 Position Mapping 개선
+- [ ] 요소 정렬 옵션 (center, left, right)
 
-### Phase 2: AI & 자동화 (차별화)
+### Phase 2: Enhanced Editor
 
-- **기능**: AI 프로젝트 설명 생성, AI 회고록 작성, 웹훅 기반 자동 업데이트
-- **목표**: 사용자를 플랫폼에 머무르게 하는 락인 효과 창출
+- [ ] 섹션 내용 사전 작성 기능
+- [ ] 레포지토리 연동 Project 섹션
+- [ ] AI 콘텐츠 생성 통합
+- [ ] 더 다양한 디자인 요소
 
-### Phase 3: 플랫폼 (데스크톱 & 생태계)
+### Phase 3: Automation
 
-- **기능**: 데스크톱 앱 배포 (Mac/Win), 커스텀 테마 마켓플레이스
-- **목표**: Draw.io처럼 필수 개발자 유틸리티로 자리매김
+- [ ] GitHub Actions 연동
+- [ ] Featured Projects 자동 업데이트
+- [ ] 블로그 연동
+- [ ] 다국어 자동 번역
 
 ## 시작하기
 
