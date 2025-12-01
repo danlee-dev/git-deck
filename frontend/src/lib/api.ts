@@ -71,6 +71,20 @@ export const blocksAPI = {
   create: (data: any) => api.post('/blocks', data),
   update: (id: string, data: any) => api.put(`/blocks/${id}`, data),
   delete: (id: string) => api.delete(`/blocks/${id}`),
+  saveToGithub: (data: {
+    blocks: any[];
+    markdown_content: string;
+    repo_owner: string;
+    repo_name: string;
+    last_known_sha?: string | null;
+  }) => api.post('/blocks/save-to-github', data),
+  loadFromGithub: (repo_owner: string, repo_name: string) =>
+    api.get('/blocks/load-from-github', { params: { repo_owner, repo_name } }),
+  renderMarkdown: (data: {
+    markdown: string;
+    repo_owner: string;
+    repo_name: string;
+  }) => api.post('/blocks/render-markdown', data),
 };
 
 // Blog API
