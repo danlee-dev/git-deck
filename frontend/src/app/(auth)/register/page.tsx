@@ -34,7 +34,7 @@ export default function RegisterPage() {
 
     try {
       await register(username, email, password);
-      router.push('/dashboard');
+      router.push('/profile');
     } catch (err: any) {
       setError(err.response?.data?.detail || '회원가입에 실패했습니다.');
     } finally {
@@ -43,29 +43,29 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-github-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-github-gray-50 dark:bg-github-gray-900">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg border border-github-gray-200 p-8 shadow-sm">
+        <div className="bg-white dark:bg-github-gray-800 rounded-lg border border-github-gray-200 dark:border-github-gray-700 p-8 shadow-sm">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-semibold text-github-gray-900 mb-2">
+            <h1 className="text-2xl font-semibold text-github-gray-900 dark:text-github-gray-100 mb-2">
               Git Deck
             </h1>
-            <p className="text-sm text-github-gray-600">
+            <p className="text-sm text-github-gray-600 dark:text-github-gray-400">
               새 계정을 만드세요
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-                <p className="text-sm text-red-600">{error}</p>
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md">
+                <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
               </div>
             )}
 
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-github-gray-900 mb-2"
+                className="block text-sm font-medium text-github-gray-900 dark:text-github-gray-100 mb-2"
               >
                 사용자 이름
               </label>
@@ -83,7 +83,7 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-github-gray-900 mb-2"
+                className="block text-sm font-medium text-github-gray-900 dark:text-github-gray-100 mb-2"
               >
                 이메일
               </label>
@@ -101,7 +101,7 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-github-gray-900 mb-2"
+                className="block text-sm font-medium text-github-gray-900 dark:text-github-gray-100 mb-2"
               >
                 비밀번호
               </label>
@@ -119,7 +119,7 @@ export default function RegisterPage() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-github-gray-900 mb-2"
+                className="block text-sm font-medium text-github-gray-900 dark:text-github-gray-100 mb-2"
               >
                 비밀번호 확인
               </label>
@@ -144,11 +144,11 @@ export default function RegisterPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-github-gray-600">
+            <p className="text-sm text-github-gray-600 dark:text-github-gray-400">
               이미 계정이 있으신가요?{' '}
               <Link
                 href="/login"
-                className="text-github-blue hover:underline font-medium"
+                className="text-github-blue dark:text-blue-400 hover:underline font-medium"
               >
                 로그인
               </Link>

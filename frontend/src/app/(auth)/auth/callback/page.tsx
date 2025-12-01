@@ -17,7 +17,7 @@ export default function AuthCallbackPage() {
       localStorage.setItem('access_token', token);
 
       fetchUser().then(() => {
-        router.push('/dashboard');
+        router.push('/profile');
       }).catch(() => {
         localStorage.removeItem('access_token');
         router.push('/login');
