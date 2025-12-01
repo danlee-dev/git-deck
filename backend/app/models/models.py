@@ -15,6 +15,7 @@ class User(Base):
     avatar_url = Column(Text)
 
     github_id = Column(String(100), unique=True, nullable=True, index=True)
+    github_username = Column(String(255), nullable=True, index=True)
     github_access_token = Column(Text, nullable=True)
     github_webhook_id = Column(String(100), nullable=True)
     is_github_connected = Column(Boolean, default=False)

@@ -27,6 +27,8 @@ class UserUpdate(BaseModel):
 class UserResponse(UserBase):
     id: str
     github_id: str
+    github_username: Optional[str] = None
+    is_github_connected: bool = False
     created_at: datetime
     updated_at: datetime
 
