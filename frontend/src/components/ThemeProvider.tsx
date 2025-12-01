@@ -7,11 +7,14 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   const { theme } = useThemeStore();
 
   useEffect(() => {
-    // 초기 로드 시 테마 적용
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.documentElement.setAttribute('data-color-mode', 'dark');
+      document.documentElement.setAttribute('data-dark-theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.setAttribute('data-color-mode', 'light');
+      document.documentElement.setAttribute('data-light-theme', 'light');
     }
   }, [theme]);
 

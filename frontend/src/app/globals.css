@@ -291,3 +291,34 @@
 .dark .textarea {
   @apply bg-github-gray-800 border-github-gray-700 text-github-gray-100;
 }
+
+/* Theme-aware images */
+.light-theme-only {
+  display: inline-block !important;
+}
+
+.dark-theme-only {
+  display: none !important;
+}
+
+.dark .light-theme-only {
+  display: none !important;
+}
+
+.dark .dark-theme-only {
+  display: inline-block !important;
+}
+
+/* Click-to-source hover effect */
+.markdown-body *[data-line-start]:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+  cursor: pointer;
+  outline: 1px solid rgba(59, 130, 246, 0.3);
+  outline-offset: 2px;
+  transition: all 0.2s ease;
+}
+
+.dark .markdown-body *[data-line-start]:hover {
+  background-color: rgba(96, 165, 250, 0.15);
+  outline-color: rgba(96, 165, 250, 0.4);
+}
