@@ -19,13 +19,8 @@ export default function Navigation() {
 
   const navItems = [
     {
-      href: '/dashboard',
-      label: '대시보드',
-      icon: LayoutDashboard,
-    },
-    {
       href: '/profile',
-      label: '프로필',
+      label: 'Profile Editor',
       icon: User,
     },
     {

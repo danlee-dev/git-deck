@@ -17,11 +17,11 @@ export default function Header() {
 
   return (
     <header className="border-b border-github-gray-200 dark:border-github-gray-700 bg-white dark:bg-github-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/dashboard" className="flex items-center gap-2">
+            <Link href="/profile" className="flex items-center gap-2">
               <Github className="w-6 h-6 text-github-gray-900 dark:text-github-gray-100" />
               <span className="text-lg font-semibold text-github-gray-900 dark:text-github-gray-100">
                 Git Deck
@@ -32,16 +32,6 @@ export default function Header() {
           {/* Navigation */}
           <nav className="hidden md:flex items-center gap-1">
             <Link
-              href="/dashboard"
-              className={`px-3 py-2 text-sm rounded-md transition-colors ${
-                isActive('/dashboard')
-                  ? 'bg-github-gray-100 dark:bg-github-gray-800 text-github-gray-900 dark:text-github-gray-100 font-medium'
-                  : 'text-github-gray-600 dark:text-github-gray-400 hover:bg-github-gray-50 dark:hover:bg-github-gray-800 hover:text-github-gray-900 dark:hover:text-github-gray-100'
-              }`}
-            >
-              대시보드
-            </Link>
-            <Link
               href="/profile"
               className={`px-3 py-2 text-sm rounded-md transition-colors ${
                 isActive('/profile')
@@ -49,7 +39,7 @@ export default function Header() {
                   : 'text-github-gray-600 dark:text-github-gray-400 hover:bg-github-gray-50 dark:hover:bg-github-gray-800 hover:text-github-gray-900 dark:hover:text-github-gray-100'
               }`}
             >
-              프로필
+              Profile Editor
             </Link>
             <Link
               href="/blog"
