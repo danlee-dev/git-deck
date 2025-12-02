@@ -3,11 +3,17 @@ from app.models.models import (
     User,
     Profile,
     Block,
+    BlogFolder,
     BlogPost,
     Series,
     GitHubRepository,
     SyncHistory,
-    Webhook
+    Webhook,
+    Follow,
+    PostLike,
+    Comment,
+    Notification,
+    PostView
 )
 
 __all__ = [
@@ -17,9 +23,15 @@ __all__ = [
     "User",
     "Profile",
     "Block",
+    "BlogFolder",
     "BlogPost",
     "Series",
     "GitHubRepository",
     "SyncHistory",
-    "Webhook"
+    "Webhook",
+    "Follow",
+    "PostLike",
+    "Comment",
+    "Notification",
+    "PostView"
 ]
