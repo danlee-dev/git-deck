@@ -41,8 +41,8 @@ export const snippets: Snippet[] = [
   {
     id: 'github-stats-dark',
     category: 'stats',
-    name: 'GitHub Stats (Theme-aware)',
-    description: 'Stats card with dark/light mode support',
+    name: 'GitHub Stats',
+    description: 'Stats card with theme support',
     icon: Moon,
     markdown: (username) => `<picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://readme-stats-nu-beryl.vercel.app/api?username=${username}&show_icons=true&theme=dark">
@@ -56,14 +56,11 @@ export const snippets: Snippet[] = [
     name: 'Streak Stats',
     description: 'Show your contribution streak',
     icon: Flame,
-    markdown: (username) => `<div align="center">
-
-<picture>
+    markdown: (username) => `<picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-streak-stats-gules-three.vercel.app/?user=${username}&theme=dark&hide_border=true&background=0D1117&stroke=0000&ring=79C0FF&fire=79C0FF&currStreakLabel=79C0FF">
-  <img alt="Streak stats" src="https://github-readme-streak-stats-gules-three.vercel.app/?user=${username}&theme=default&hide_border=true">
-</picture>
-
-</div>`,
+  <source media="(prefers-color-scheme: light)" srcset="https://github-readme-streak-stats-gules-three.vercel.app/?user=${username}&theme=default&hide_border=true">
+  <img alt="Streak Stats" src="https://github-readme-streak-stats-gules-three.vercel.app/?user=${username}&theme=default&hide_border=true">
+</picture>`,
   },
   {
     id: 'activity-graph',
@@ -83,7 +80,11 @@ export const snippets: Snippet[] = [
     name: 'Top Languages',
     description: 'Most used programming languages',
     icon: Code2,
-    markdown: (username) => `![Top Languages](https://readme-stats-nu-beryl.vercel.app/api/top-langs/?username=${username}&layout=compact)`,
+    markdown: (username) => `<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://readme-stats-nu-beryl.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=dark">
+  <source media="(prefers-color-scheme: light)" srcset="https://readme-stats-nu-beryl.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=default">
+  <img alt="Top Languages" src="https://readme-stats-nu-beryl.vercel.app/api/top-langs/?username=${username}&layout=compact&theme=default">
+</picture>`,
   },
   {
     id: 'profile-views',

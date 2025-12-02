@@ -109,23 +109,42 @@ export default function ProfilePreview() {
       return `https://raw.githubusercontent.com/${user.github_username}/${user.github_username}/main/${cleanSrc}`;
     };
 
-    const pictureRegex = /<picture>([\s\S]*?)<\/picture>/gi;
-    processedHtml = processedHtml.replace(pictureRegex, (match) => {
-      const darkSourceMatch = match.match(/<source[^>]*media=["'][^"']*dark[^"']*["'][^>]*srcset=["']([^"']+)["']/i);
-      const lightSourceMatch = match.match(/<source[^>]*media=["'][^"']*light[^"']*["'][^>]*srcset=["']([^"']+)["']/i);
-      const imgMatch = match.match(/<img([^>]*)>/i);
+    // Handle <picture> tags with any attributes
+    const pictureRegex = /<picture[^>]*>([\s\S]*?)<\/picture>/gi;
+    processedHtml = processedHtml.replace(pictureRegex, (match, content) => {
+      // Parse all source tags and extract media/srcset separately
+      const sources: { media: string; srcset: string }[] = [];
+      const sourceRegex = /<source[^>]+>/gi;
+      let sourceMatch;
+
+      while ((sourceMatch = sourceRegex.exec(content)) !== null) {
+        const sourceTag = sourceMatch[0];
+        const mediaMatch = sourceTag.match(/media=["']([^"']+)["']/i);
+        const srcsetMatch = sourceTag.match(/srcset=["']([^"']+)["']/i);
+
+        if (mediaMatch && srcsetMatch) {
+          sources.push({ media: mediaMatch[1], srcset: srcsetMatch[1] });
+        }
+      }
+
+      // Find dark and light sources
+      const darkSource = sources.find(s => s.media.includes('dark'));
+      const lightSource = sources.find(s => s.media.includes('light'));
+
+      // Get img attributes
+      const imgMatch = content.match(/<img([^>]*)>/i);
 
       if (imgMatch) {
         let imgAttrs = imgMatch[1];
         imgAttrs = imgAttrs.replace(/\s*src=["'][^"']*["']/gi, '');
 
-        if (darkSourceMatch && lightSourceMatch) {
-          const darkSrc = makeAbsolute(darkSourceMatch[1]);
-          const lightSrc = makeAbsolute(lightSourceMatch[1]);
+        if (darkSource && lightSource) {
+          const darkSrc = makeAbsolute(darkSource.srcset);
+          const lightSrc = makeAbsolute(lightSource.srcset);
 
           return `<span class="theme-aware-image-wrapper" style="display: inline-block;"><img${imgAttrs} src="${lightSrc}" class="light-theme-only"><img${imgAttrs} src="${darkSrc}" class="dark-theme-only"></span>`;
-        } else if (darkSourceMatch || lightSourceMatch) {
-          const srcset = darkSourceMatch?.[1] || lightSourceMatch?.[1];
+        } else if (darkSource || lightSource) {
+          const srcset = darkSource?.srcset || lightSource?.srcset;
           const absoluteSrc = makeAbsolute(srcset!);
           return `<img${imgAttrs} src="${absoluteSrc}">`;
         }

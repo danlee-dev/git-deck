@@ -5,7 +5,7 @@
 <p>GitHub Profile README Editor with Real-time Preview</p>
 </div>
 
-> 개발기간: 2025.01 ~
+> 개발기간: 2025.12 ~
 >
 > Built with Next.js 14, FastAPI, PostgreSQL
 
@@ -22,6 +22,8 @@ GitDeck은 GitHub 프로필 README를 시각적으로 편집하고 실시간 미
 - **양방향 README 동기화**: Load/Save with SHA-based 충돌 감지
 - **다크/라이트 테마**: 시스템 설정 연동 지원
 - **로컬 자동 저장**: localStorage 기반 세션 연속성
+
+![GitDeck Profile Editor](images/v1-profile-editor.png)
 
 ## 핵심 기능
 
