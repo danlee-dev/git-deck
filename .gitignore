@@ -11,6 +11,7 @@ backend/.env
 backend/venv/
 backend/__pycache__/
 backend/*.pyc
+backend/app/uploads/
 
 # Frontend Environment
 frontend/.env.local

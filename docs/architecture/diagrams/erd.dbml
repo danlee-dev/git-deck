@@ -1,33 +1,41 @@
-// DevDeck Database Schema - Refined Version
+// GitDeck Database Schema - Current Implementation
 
 Table users {
   id varchar(36) [pk, default: `uuid_generate_v4()`]
-  github_id varchar(100) [unique, null, note: 'Nullable - users can register with email only']
   username varchar(255) [unique, not null]
   email varchar(255) [unique, not null]
   password_hash varchar(255) [null, note: 'For email/password authentication']
   avatar_url text
+
+  github_id varchar(100) [unique, null]
+  github_username varchar(255) [null]
   github_access_token text [note: 'Encrypted storage required']
-  github_webhook_id varchar(100) [note: 'GitHub webhook ID for auto-sync']
-  is_github_connected boolean [default: false, note: 'Whether user has connected GitHub account']
+  github_webhook_id varchar(100)
+  is_github_connected boolean [default: false]
+
+  bio text [null]
+  social_links jsonb [null, note: '[{"platform": "linkedin", "url": "..."}]']
+
   is_active boolean [default: true]
-  deleted_at timestamp [null, note: 'Soft delete - stored for 7 days before permanent deletion']
+  deleted_at timestamp [null]
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
 
   indexes {
     github_id
+    github_username
     username
+    email
   }
 }
 
 Table profiles {
   id varchar(36) [pk, default: `uuid_generate_v4()`]
   user_id varchar(36) [ref: > users.id, not null]
-  slug varchar(255) [unique, not null, note: 'devdeck.io/@username']
+  slug varchar(255) [unique, not null]
   display_name varchar(255)
   bio text
-  theme_config jsonb [note: 'Colors, fonts, layout preferences']
+  theme_config jsonb
   is_public boolean [default: true]
   custom_domain varchar(255) [unique]
   created_at timestamp [default: `now()`]
@@ -43,11 +51,11 @@ Table profiles {
 Table blocks {
   id varchar(36) [pk, default: `uuid_generate_v4()`]
   profile_id varchar(36) [ref: > profiles.id, not null]
-  type varchar(50) [not null, note: 'project_card, tech_stack, blog_feed, github_stats, custom_markdown']
+  type varchar(50) [not null]
   title varchar(255)
-  content jsonb [note: 'Block content and configuration']
+  content jsonb
   order_index integer [not null]
-  width integer [default: 12, note: 'Grid width (1-12)']
+  width integer [default: 12]
   is_visible boolean [default: true]
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
@@ -59,27 +67,50 @@ Table blocks {
   }
 }
 
+Table blog_folders {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null]
+  parent_id varchar(36) [ref: > blog_folders.id, null]
+  name varchar(255) [not null]
+  icon varchar(50) [default: 'folder']
+  order_index integer [default: 0]
+  is_expanded boolean [default: false]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    parent_id
+  }
+}
+
 Table blog_posts {
   id varchar(36) [pk, default: `uuid_generate_v4()`]
   user_id varchar(36) [ref: > users.id, not null]
-  series_id varchar(36) [ref: > series.id]
+  series_id varchar(36) [ref: > series.id, null]
+  folder_id varchar(36) [ref: > blog_folders.id, null]
   title varchar(500) [not null]
   slug varchar(500) [not null]
   content_md text [not null]
+  content_blocks jsonb [null]
   excerpt text
   cover_image text
   tags jsonb
   status varchar(20) [default: 'draft', note: 'draft, published, archived']
   published_at timestamp
   view_count integer [default: 0]
-  github_path varchar(500) [note: 'GitHub file path for sync']
-  github_sha varchar(100) [note: 'Git commit SHA for conflict detection']
+  likes_count integer [default: 0]
+  comments_count integer [default: 0]
+  github_repo_id varchar(36) [ref: > github_repositories.id, null]
+  github_path varchar(500)
+  github_sha varchar(100)
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: `now()`]
 
   indexes {
     user_id
     series_id
+    folder_id
     (user_id, slug) [unique]
     status
     published_at
@@ -147,15 +178,13 @@ Table sync_history {
     status
     created_at
   }
-
-  Note: 'System sync logs for debugging and monitoring'
 }
 
 Table webhooks {
   id varchar(36) [pk, default: `uuid_generate_v4()`]
   user_id varchar(36) [ref: > users.id, not null]
   service varchar(50) [not null, note: 'discord, slack, custom']
-  event_type varchar(100) [not null, note: 'blog_publish, repo_star, profile_update']
+  event_type varchar(100) [not null]
   target_url text [not null]
   secret varchar(255)
   is_active boolean [default: true]
@@ -168,6 +197,80 @@ Table webhooks {
     event_type
     is_active
   }
+}
 
-  Note: 'Outgoing webhooks for user notifications'
+Table follows {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  follower_id varchar(36) [ref: > users.id, not null]
+  following_id varchar(36) [ref: > users.id, not null]
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    follower_id
+    following_id
+    (follower_id, following_id) [unique]
+  }
+}
+
+Table post_likes {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null]
+  post_id varchar(36) [ref: > blog_posts.id, not null]
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    post_id
+    (user_id, post_id) [unique]
+  }
+}
+
+Table comments {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null]
+  post_id varchar(36) [ref: > blog_posts.id, not null]
+  parent_id varchar(36) [ref: > comments.id, null]
+  content text [not null]
+  is_deleted boolean [default: false]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    post_id
+    parent_id
+    created_at
+  }
+}
+
+Table notifications {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  user_id varchar(36) [ref: > users.id, not null, note: 'Recipient']
+  actor_id varchar(36) [ref: > users.id, not null, note: 'Who triggered']
+  type varchar(20) [not null, note: 'like, comment, follow, reply']
+  post_id varchar(36) [ref: > blog_posts.id, null]
+  comment_id varchar(36) [ref: > comments.id, null]
+  is_read boolean [default: false]
+  created_at timestamp [default: `now()`]
+
+  indexes {
+    user_id
+    is_read
+    created_at
+  }
+}
+
+Table post_views {
+  id varchar(36) [pk, default: `uuid_generate_v4()`]
+  post_id varchar(36) [ref: > blog_posts.id, not null]
+  view_date timestamp [not null, note: 'Date truncated to day']
+  view_count integer [default: 1]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+
+  indexes {
+    post_id
+    view_date
+    (post_id, view_date) [unique]
+  }
 }
