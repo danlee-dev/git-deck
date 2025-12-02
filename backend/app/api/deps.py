@@ -1,5 +1,5 @@
-from typing import Generator
-from fastapi import Depends, HTTPException, status
+from typing import Generator, Optional
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.models.base import get_db
@@ -7,6 +7,7 @@ from app.models import User
 from app.core.security import verify_token
 
 security = HTTPBearer()
+optional_security = HTTPBearer(auto_error=False)
 
 def get_db_session() -> Generator[Session, None, None]:
     """
@@ -52,6 +53,30 @@ def get_current_user(
         )
 
     return user
+
+def get_current_user_optional(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(optional_security),
+    db: Session = Depends(get_db_session)
+) -> Optional[User]:
+    """
+    Get current user if authenticated, None otherwise (for public endpoints)
+    """
+    if credentials is None:
+        return None
+
+    token = credentials.credentials
+    payload = verify_token(token)
+
+    if payload is None:
+        return None
+
+    user_id: str = payload.get("sub")
+    if user_id is None:
+        return None
+
+    user = db.query(User).filter(User.id == user_id).first()
+    return user
+
 
 def get_current_active_user(
     current_user: User = Depends(get_current_user)
