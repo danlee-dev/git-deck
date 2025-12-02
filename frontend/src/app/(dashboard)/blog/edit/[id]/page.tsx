@@ -21,6 +21,7 @@ import { PartialBlock } from '@blocknote/core';
 import { BlogPost } from '@/types/blog';
 import PostProperties from '@/components/blog-editor/PostProperties';
 import CoverImage from '@/components/blog-editor/CoverImage';
+import EditorErrorBoundary from '@/components/blog-editor/EditorErrorBoundary';
 
 // Dynamic import for NotionEditor to avoid SSR issues
 const NotionEditor = dynamic(
@@ -68,6 +69,7 @@ export default function EditPostPage() {
   const titleInputRef = useRef<HTMLInputElement>(null);
   const statusMenuRef = useRef<HTMLDivElement>(null);
   const moreMenuRef = useRef<HTMLDivElement>(null);
+  const [editorKey, setEditorKey] = useState(0);
 
   // Fetch post data
   useEffect(() => {
@@ -449,10 +451,13 @@ export default function EditPostPage() {
           />
 
           {/* NotionEditor */}
-          <NotionEditor
-            initialContent={contentBlocks.length > 0 ? contentBlocks : undefined}
-            onChange={handleEditorChange}
-          />
+          <EditorErrorBoundary onReset={() => setEditorKey(k => k + 1)}>
+            <NotionEditor
+              key={editorKey}
+              initialContent={contentBlocks.length > 0 ? contentBlocks : undefined}
+              onChange={handleEditorChange}
+            />
+          </EditorErrorBoundary>
         </div>
       </div>
     </div>
