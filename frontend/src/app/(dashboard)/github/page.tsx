@@ -65,6 +65,7 @@ export default function GitHubPage() {
 
   if (!user?.is_github_connected) {
     return (
+      <div className="h-full overflow-auto">
       <div className="card bg-white dark:bg-github-gray-800 border-github-gray-200 dark:border-github-gray-700 text-center py-12">
         <Github className="w-16 h-16 text-github-gray-400 dark:text-github-gray-600 mx-auto mb-4" />
         <h2 className="text-lg font-medium text-github-gray-900 dark:text-github-gray-100 mb-2">
@@ -76,6 +77,7 @@ export default function GitHubPage() {
         <Link href="/settings" className="btn-primary">
           설정에서 연결하기
         </Link>
+      </div>
       </div>
     );
   }
@@ -141,7 +143,8 @@ export default function GitHubPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="h-full overflow-auto">
+    <div className="space-y-6 pb-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-github-gray-900 dark:text-github-gray-100">
@@ -282,6 +285,7 @@ export default function GitHubPage() {
           )}
         </>
       )}
+    </div>
     </div>
   );
 }

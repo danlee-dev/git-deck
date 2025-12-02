@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import { useThemeStore } from '@/store/themeStore';
 import { Github, LogOut, User, Settings, Moon, Sun } from 'lucide-react';
+import NotificationDropdown from '@/components/notifications/NotificationDropdown';
 
 export default function Header() {
   const pathname = usePathname();
@@ -67,10 +68,14 @@ export default function Header() {
 
           {/* User Menu */}
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-github-gray-50 dark:bg-github-gray-800 rounded-md">
+            <Link
+              href="/mypage"
+              className="flex items-center gap-2 px-3 py-1.5 bg-github-gray-50 dark:bg-github-gray-800 rounded-md hover:bg-github-gray-100 dark:hover:bg-github-gray-700 transition-colors"
+            >
               <User className="w-4 h-4 text-github-gray-600 dark:text-github-gray-400" />
-              <span className="text-sm text-github-gray-900 dark:text-github-gray-100">{user?.username}</span>
-            </div>
+              <span className="text-sm text-github-gray-900 dark:text-github-gray-100">{user?.github_username || user?.username}</span>
+            </Link>
+            <NotificationDropdown isAuthenticated={isAuthenticated} />
             <button
               onClick={toggleTheme}
               className="p-2 text-github-gray-600 dark:text-github-gray-400 hover:bg-github-gray-100 dark:hover:bg-github-gray-800 rounded-md transition-colors"

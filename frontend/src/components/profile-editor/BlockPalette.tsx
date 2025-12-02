@@ -6,7 +6,7 @@ import { useProfileEditorStore } from '@/store/profileEditorStore';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
 export default function BlockPalette() {
-  const { addBlock } = useProfileEditorStore();
+  const { setMarkdownContent, markdownContent } = useProfileEditorStore();
   const [expandedCategories, setExpandedCategories] = useState<string[]>(
     BLOCK_CATEGORIES.map((cat) => cat.id)
   );
@@ -20,7 +20,9 @@ export default function BlockPalette() {
   };
 
   const handleAddBlock = (template: BlockTemplate) => {
-    addBlock(template.type, template.defaultProperties);
+    // Append block markdown to content
+    const blockMarkdown = template.defaultProperties?.markdown || `\n<!-- ${template.type} block -->\n`;
+    setMarkdownContent(markdownContent + blockMarkdown);
   };
 
   return (
