@@ -85,7 +85,7 @@ export default function BlogPage() {
   };
 
   const handleCreateFolder = async () => {
-    const name = prompt('Enter folder name:');
+    const name = prompt('폴더 이름을 입력하세요:');
     if (!name) return;
     await createFolder(name, null);
   };
@@ -105,9 +105,9 @@ export default function BlogPage() {
   const recentPosts = posts.slice(0, 5);
 
   const filterButtons: { key: FilterType; label: string; icon: React.ReactNode }[] = [
-    { key: 'recent', label: 'Recent', icon: <Clock className="w-4 h-4" /> },
-    { key: 'popular', label: 'Popular', icon: <TrendingUp className="w-4 h-4" /> },
-    { key: 'liked', label: 'Liked', icon: <Heart className="w-4 h-4" /> },
+    { key: 'recent', label: '최신', icon: <Clock className="w-4 h-4" /> },
+    { key: 'popular', label: '인기', icon: <TrendingUp className="w-4 h-4" /> },
+    { key: 'liked', label: '좋아요', icon: <Heart className="w-4 h-4" /> },
   ];
 
   return (
@@ -119,10 +119,10 @@ export default function BlogPage() {
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                Discover
+                둘러보기
               </h1>
               <p className="text-gray-600 dark:text-gray-400">
-                Explore posts from the community
+                커뮤니티의 게시물을 탐색하세요
               </p>
             </div>
 
@@ -155,8 +155,8 @@ export default function BlogPage() {
                 <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                 <p className="text-gray-500 dark:text-gray-400">
                   {filter === 'liked'
-                    ? "You haven't liked any posts yet"
-                    : 'No posts found'}
+                    ? "아직 좋아요한 게시물이 없습니다"
+                    : '게시물이 없습니다'}
                 </p>
               </div>
             ) : (
@@ -179,7 +179,7 @@ export default function BlogPage() {
             {/* Quick Actions */}
             <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 mb-6">
               <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
-                Quick Actions
+                빠른 작업
               </h3>
               <div className="space-y-2">
                 <button
@@ -187,14 +187,14 @@ export default function BlogPage() {
                   className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <Plus className="w-4 h-4" />
-                  New Post
+                  새 포스트
                 </button>
                 <button
                   onClick={handleCreateFolder}
                   className="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   <FolderPlus className="w-4 h-4" />
-                  New Folder
+                  새 폴더
                 </button>
               </div>
             </div>
@@ -204,7 +204,7 @@ export default function BlogPage() {
               <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
                 <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                    My Recent Posts
+                    내 최근 포스트
                   </h3>
                 </div>
                 <div className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -230,7 +230,7 @@ export default function BlogPage() {
                             : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
                         }`}
                       >
-                        {post.status === 'published' ? 'Published' : 'Draft'}
+                        {post.status === 'published' ? '게시됨' : '임시저장'}
                       </span>
                     </button>
                   ))}
@@ -243,13 +243,13 @@ export default function BlogPage() {
               <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 text-center">
                 <FileText className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                  Start writing your first post
+                  첫 번째 포스트를 작성해보세요
                 </p>
                 <button
                   onClick={handleCreatePost}
                   className="text-sm text-blue-600 hover:underline"
                 >
-                  Create a post
+                  포스트 작성
                 </button>
               </div>
             )}

@@ -21,7 +21,7 @@ export default function BlockPalette() {
 
   const handleAddBlock = (template: BlockTemplate) => {
     // Append block markdown to content
-    const blockMarkdown = template.defaultProperties?.markdown || `\n<!-- ${template.type} block -->\n`;
+    const blockMarkdown = template.defaultContent || `\n<!-- ${template.type} block -->\n`;
     setMarkdownContent(markdownContent + blockMarkdown);
   };
 

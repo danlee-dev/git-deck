@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import { useThemeStore } from '@/store/themeStore';
-import { Github, LogOut, User, Settings, Moon, Sun } from 'lucide-react';
+import { Github, LogOut, User, Settings, Moon, Sun, Workflow, Store } from 'lucide-react';
 import NotificationDropdown from '@/components/notifications/NotificationDropdown';
 
 export default function Header() {
@@ -40,7 +40,7 @@ export default function Header() {
                   : 'text-github-gray-600 dark:text-github-gray-400 hover:bg-github-gray-50 dark:hover:bg-github-gray-800 hover:text-github-gray-900 dark:hover:text-github-gray-100'
               }`}
             >
-              Profile Editor
+              프로필 편집기
             </Link>
             <Link
               href="/blog"
@@ -64,6 +64,28 @@ export default function Header() {
                 GitHub
               </Link>
             )}
+            <Link
+              href="/workflows"
+              className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-md transition-colors ${
+                pathname?.startsWith('/workflows')
+                  ? 'bg-github-gray-100 dark:bg-github-gray-800 text-github-gray-900 dark:text-github-gray-100 font-medium'
+                  : 'text-github-gray-600 dark:text-github-gray-400 hover:bg-github-gray-50 dark:hover:bg-github-gray-800 hover:text-github-gray-900 dark:hover:text-github-gray-100'
+              }`}
+            >
+              <Workflow className="w-4 h-4" />
+              워크플로우
+            </Link>
+            <Link
+              href="/marketplace"
+              className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-md transition-colors ${
+                pathname?.startsWith('/marketplace')
+                  ? 'bg-github-gray-100 dark:bg-github-gray-800 text-github-gray-900 dark:text-github-gray-100 font-medium'
+                  : 'text-github-gray-600 dark:text-github-gray-400 hover:bg-github-gray-50 dark:hover:bg-github-gray-800 hover:text-github-gray-900 dark:hover:text-github-gray-100'
+              }`}
+            >
+              <Store className="w-4 h-4" />
+              마켓플레이스
+            </Link>
           </nav>
 
           {/* User Menu */}

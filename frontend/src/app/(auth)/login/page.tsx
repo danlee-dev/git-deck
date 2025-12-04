@@ -33,7 +33,16 @@ export default function LoginPage() {
   const handleGithubLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
     const redirectUri = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/github/callback`;
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user,repo`;
+    // GitHub Actions 기능에 필요한 전체 권한
+    const scopes = [
+      'user',           // 유저 정보
+      'repo',           // 레포지토리 전체 접근
+      'read:org',       // 조직 정보 읽기
+      'workflow',       // 워크플로우 파일 수정 (.github/workflows)
+      'write:packages', // GitHub Packages 푸시 (Docker 등)
+      'read:packages',  // GitHub Packages 읽기
+    ].join(',');
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}`;
   };
 
   return (

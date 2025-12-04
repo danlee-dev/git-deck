@@ -198,13 +198,13 @@ export default function ProfileEditorPage() {
         <div className="card bg-white dark:bg-github-gray-800 border-github-gray-200 dark:border-github-gray-700 text-center py-12 max-w-md">
           <Github className="w-16 h-16 text-github-gray-400 dark:text-github-gray-600 mx-auto mb-4" />
           <h2 className="text-lg font-medium text-github-gray-900 dark:text-github-gray-100 mb-2">
-            GitHub Connection Required
+            GitHub 연결 필요
           </h2>
           <p className="text-sm text-github-gray-600 dark:text-github-gray-400 mb-6">
-            Connect your GitHub account to edit your profile
+            프로필을 편집하려면 GitHub 계정을 연결하세요
           </p>
           <Link href="/settings" className="btn-primary">
-            Connect GitHub
+            GitHub 연결
           </Link>
         </div>
       </div>
@@ -224,10 +224,10 @@ export default function ProfileEditorPage() {
       <div className="flex-shrink-0 flex items-center justify-between mb-4">
         <div>
           <h1 className="text-2xl font-semibold text-github-gray-900 dark:text-github-gray-100">
-            Profile Editor
+            프로필 편집기
           </h1>
           <p className="mt-1 text-sm text-github-gray-600 dark:text-github-gray-400">
-            Customize your GitHub profile README
+            GitHub 프로필 README를 커스터마이즈하세요
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -237,10 +237,10 @@ export default function ProfileEditorPage() {
             className={`btn flex items-center gap-2 bg-github-gray-100 dark:bg-github-gray-800 text-github-gray-900 dark:text-github-gray-100 ${
               isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
             }`}
-            title="Reload from GitHub"
+            title="GitHub에서 새로고침"
           >
             <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            {isRefreshing ? 'Loading...' : 'Reload'}
+            {isRefreshing ? '로딩 중...' : '새로고침'}
           </button>
           <button
             onClick={() => handleSaveToGithub()}
@@ -252,12 +252,12 @@ export default function ProfileEditorPage() {
             {isSaving ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Saving...
+                저장 중...
               </>
             ) : saveSuccess ? (
-              'Saved!'
+              '저장됨!'
             ) : (
-              'Save to GitHub'
+              'GitHub에 저장'
             )}
           </button>
         </div>
@@ -272,7 +272,7 @@ export default function ProfileEditorPage() {
       {saveSuccess && (
         <div className="flex-shrink-0 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md p-4 mb-4">
           <p className="text-sm text-green-800 dark:text-green-200">
-            Successfully saved to GitHub!
+            GitHub에 성공적으로 저장되었습니다!
           </p>
         </div>
       )}

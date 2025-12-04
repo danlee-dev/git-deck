@@ -147,25 +147,35 @@ async def github_login():
     """
     Redirect to GitHub OAuth login (for new users)
     """
+    # GitHub Actions 기능에 필요한 전체 권한
+    scopes = ",".join([
+        "user",           # 유저 정보
+        "repo",           # 레포지토리 전체 접근
+        "read:org",       # 조직 정보 읽기
+        "workflow",       # 워크플로우 파일 수정 (.github/workflows)
+        "write:packages", # GitHub Packages 푸시 (Docker 등)
+        "read:packages",  # GitHub Packages 읽기
+    ])
     github_auth_url = (
         f"https://github.com/login/oauth/authorize"
         f"?client_id={settings.GITHUB_CLIENT_ID}"
         f"&redirect_uri={settings.GITHUB_REDIRECT_URI}"
-        f"&scope=user,repo,read:org"
+        f"&scope={scopes}"
     )
     return RedirectResponse(url=github_auth_url)
 
 @router.post("/connect-github")
 async def connect_github(
     code: str,
+    redirect_uri: str = None,
     current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db_session)
 ):
     """
-    Connect GitHub account to existing user
+    Connect or reconnect GitHub account to existing user
     """
-    if current_user.is_github_connected:
-        raise HTTPException(status_code=400, detail="GitHub already connected")
+    # Use provided redirect_uri or fall back to default
+    actual_redirect_uri = redirect_uri or settings.GITHUB_REDIRECT_URI
 
     async with httpx.AsyncClient() as client:
         token_response = await client.post(
@@ -175,7 +185,7 @@ async def connect_github(
                 "client_id": settings.GITHUB_CLIENT_ID,
                 "client_secret": settings.GITHUB_CLIENT_SECRET,
                 "code": code,
-                "redirect_uri": settings.GITHUB_REDIRECT_URI,
+                "redirect_uri": actual_redirect_uri,
             },
         )
 
@@ -224,6 +234,40 @@ async def connect_github(
         "message": "GitHub connected successfully",
         "is_github_connected": True
     }
+
+
+@router.post("/disconnect-github")
+async def disconnect_github(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db_session)
+):
+    """
+    Disconnect GitHub account from user
+    """
+    if not current_user.is_github_connected:
+        raise HTTPException(status_code=400, detail="GitHub is not connected")
+
+    # Check if user has password (can login without GitHub)
+    if not current_user.password_hash:
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot disconnect GitHub. Please set a password first as this is a GitHub-only account."
+        )
+
+    current_user.github_id = None
+    current_user.github_username = None
+    current_user.github_access_token = None
+    current_user.is_github_connected = False
+    current_user.updated_at = datetime.utcnow()
+
+    db.commit()
+    db.refresh(current_user)
+
+    return {
+        "message": "GitHub disconnected successfully",
+        "is_github_connected": False
+    }
+
 
 @router.get("/github/callback")
 async def github_callback(code: str, db: Session = Depends(get_db_session)):

@@ -260,7 +260,7 @@ export default function MyPage() {
   if (!profile) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <p className="text-gray-500">Failed to load profile</p>
+        <p className="text-gray-500">프로필을 불러오는데 실패했습니다</p>
       </div>
     );
   }
@@ -300,7 +300,7 @@ export default function MyPage() {
                   className="flex items-center gap-1.5 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   <Eye className="w-3.5 h-3.5" />
-                  Preview
+                  미리보기
                 </button>
               </div>
 
@@ -310,16 +310,16 @@ export default function MyPage() {
                   onClick={handleOpenFollowers}
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                 >
-                  <strong className="text-gray-900 dark:text-gray-100">{profile.stats.followers_count}</strong> followers
+                  <strong className="text-gray-900 dark:text-gray-100">{profile.stats.followers_count}</strong> 팔로워
                 </button>
                 <button
                   onClick={handleOpenFollowing}
                   className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                 >
-                  <strong className="text-gray-900 dark:text-gray-100">{profile.stats.following_count}</strong> following
+                  <strong className="text-gray-900 dark:text-gray-100">{profile.stats.following_count}</strong> 팔로잉
                 </button>
                 <span className="text-gray-600 dark:text-gray-400">
-                  <strong className="text-gray-900 dark:text-gray-100">{profile.stats.total_posts}</strong> posts
+                  <strong className="text-gray-900 dark:text-gray-100">{profile.stats.total_posts}</strong> 게시물
                 </span>
               </div>
             </div>
@@ -328,13 +328,13 @@ export default function MyPage() {
           {/* Bio */}
           <div className="mt-5 pt-5 border-t border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Bio</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">소개</span>
               {!isEditingBio && (
                 <button
                   onClick={() => setIsEditingBio(true)}
                   className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                 >
-                  Edit
+                  편집
                 </button>
               )}
             </div>
@@ -344,7 +344,7 @@ export default function MyPage() {
                 <textarea
                   value={bioValue}
                   onChange={(e) => setBioValue(e.target.value)}
-                  placeholder="Write a short bio..."
+                  placeholder="짧은 소개를 작성하세요..."
                   className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-600 rounded-md bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 resize-none focus:outline-none focus:ring-1 focus:ring-gray-300 dark:focus:ring-gray-500"
                   rows={2}
                 />
@@ -354,7 +354,7 @@ export default function MyPage() {
                     disabled={isSavingBio}
                     className="px-3 py-1 text-xs bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50"
                   >
-                    {isSavingBio ? 'Saving...' : 'Save'}
+                    {isSavingBio ? '저장 중...' : '저장'}
                   </button>
                   <button
                     onClick={() => {
@@ -363,13 +363,13 @@ export default function MyPage() {
                     }}
                     className="px-3 py-1 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                   >
-                    Cancel
+                    취소
                   </button>
                 </div>
               </div>
             ) : (
               <p className="text-sm text-gray-700 dark:text-gray-300">
-                {profile.bio || <span className="text-gray-400 dark:text-gray-500 italic">No bio yet</span>}
+                {profile.bio || <span className="text-gray-400 dark:text-gray-500 italic">소개가 없습니다</span>}
               </p>
             )}
           </div>
@@ -377,13 +377,13 @@ export default function MyPage() {
           {/* Social Links */}
           <div className="mt-5 pt-5 border-t border-gray-100 dark:border-gray-700">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Links</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">링크</span>
               {!isEditingSocialLinks && (
                 <button
                   onClick={() => setIsEditingSocialLinks(true)}
                   className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                 >
-                  Edit
+                  편집
                 </button>
               )}
             </div>
@@ -431,7 +431,7 @@ export default function MyPage() {
                     disabled={isSavingSocialLinks}
                     className="px-3 py-1 text-xs bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50"
                   >
-                    {isSavingSocialLinks ? 'Saving...' : 'Save'}
+                    {isSavingSocialLinks ? '저장 중...' : '저장'}
                   </button>
                   <button
                     onClick={() => {
@@ -440,7 +440,7 @@ export default function MyPage() {
                     }}
                     className="px-3 py-1 text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
                   >
-                    Cancel
+                    취소
                   </button>
                 </div>
               </div>
@@ -472,7 +472,7 @@ export default function MyPage() {
                 ))}
 
                 {!profile.is_github_connected && (!profile.social_links || profile.social_links.length === 0) && (
-                  <span className="text-sm text-gray-400 dark:text-gray-500 italic">No links added</span>
+                  <span className="text-sm text-gray-400 dark:text-gray-500 italic">추가된 링크가 없습니다</span>
                 )}
               </div>
             )}
@@ -500,7 +500,7 @@ export default function MyPage() {
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              Posts
+              게시물
             </button>
             <button
               onClick={() => setActiveTab('liked')}
@@ -510,7 +510,7 @@ export default function MyPage() {
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              Liked
+              좋아요
             </button>
           </div>
 
@@ -522,7 +522,7 @@ export default function MyPage() {
             ) : activeTab === 'posts' ? (
               myPosts.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">No posts yet</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">아직 게시물이 없습니다</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -539,7 +539,7 @@ export default function MyPage() {
             ) : (
               likedPosts.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-sm text-gray-500 dark:text-gray-400">No liked posts yet</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">좋아요한 게시물이 없습니다</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -563,7 +563,7 @@ export default function MyPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30" onClick={() => setShowFollowersModal(false)}>
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-sm w-full max-h-[70vh] overflow-hidden shadow-lg" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Followers</span>
+              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">팔로워</span>
               <button onClick={() => setShowFollowersModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-4 h-4" />
               </button>
@@ -574,7 +574,7 @@ export default function MyPage() {
                   <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
                 </div>
               ) : followers.length === 0 ? (
-                <p className="text-center text-sm text-gray-500 py-8">No followers</p>
+                <p className="text-center text-sm text-gray-500 py-8">팔로워가 없습니다</p>
               ) : (
                 followers.map(user => (
                   <div key={user.id} className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50">
@@ -599,7 +599,7 @@ export default function MyPage() {
                           : 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
                       }`}
                     >
-                      {user.is_following ? 'Following' : 'Follow'}
+                      {user.is_following ? '팔로잉' : '팔로우'}
                     </button>
                   </div>
                 ))
@@ -614,7 +614,7 @@ export default function MyPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30" onClick={() => setShowFollowingModal(false)}>
           <div className="bg-white dark:bg-gray-800 rounded-lg max-w-sm w-full max-h-[70vh] overflow-hidden shadow-lg" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">Following</span>
+              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">팔로잉</span>
               <button onClick={() => setShowFollowingModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-4 h-4" />
               </button>
@@ -625,7 +625,7 @@ export default function MyPage() {
                   <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
                 </div>
               ) : following.length === 0 ? (
-                <p className="text-center text-sm text-gray-500 py-8">Not following anyone</p>
+                <p className="text-center text-sm text-gray-500 py-8">팔로우 중인 사용자가 없습니다</p>
               ) : (
                 following.map(user => (
                   <div key={user.id} className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700/50">
@@ -646,7 +646,7 @@ export default function MyPage() {
                       onClick={() => handleFollowToggle(user.id, true)}
                       className="px-2.5 py-1 text-xs rounded-md border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400"
                     >
-                      Following
+                      팔로잉
                     </button>
                   </div>
                 ))

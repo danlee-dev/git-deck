@@ -4,11 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import {
-  LayoutDashboard,
   User,
   FileText,
   Github,
   Settings,
+  Workflow,
+  Store,
 } from 'lucide-react';
 
 export default function Navigation() {
@@ -20,8 +21,18 @@ export default function Navigation() {
   const navItems = [
     {
       href: '/profile',
-      label: 'Profile Editor',
+      label: '프로필 편집기',
       icon: User,
+    },
+    {
+      href: '/workflows',
+      label: '워크플로우',
+      icon: Workflow,
+    },
+    {
+      href: '/marketplace',
+      label: '마켓플레이스',
+      icon: Store,
     },
     {
       href: '/blog',

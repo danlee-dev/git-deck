@@ -86,7 +86,7 @@ function convertBlockToMarkdown(block: ProfileBlock): string {
 
     case 'github-stats': {
       const statsType = block.properties.statsType || 'overview';
-      const username = block.properties.username || '{username}';
+      const username = block.properties.githubUsername || '{username}';
 
       switch (statsType) {
         case 'overview':

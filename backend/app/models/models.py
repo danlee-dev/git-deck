@@ -351,3 +351,25 @@ class PostView(Base):
         Index('ix_post_views_view_date', 'view_date'),
         Index('ix_post_views_post_date', 'post_id', 'view_date', unique=True),
     )
+
+
+class Workflow(Base):
+    """GitHub Actions workflow definitions"""
+    __tablename__ = "workflows"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=True)
+    blocks = Column(JSONB, nullable=False, default=list)  # Block instances
+    connections = Column(JSONB, nullable=False, default=list)  # Connection definitions
+    is_active = Column(Boolean, default=True)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    user = relationship("User", backref="workflows")
+
+    __table_args__ = (
+        Index('ix_workflows_user_id', 'user_id'),
+        Index('ix_workflows_name', 'name'),
+    )

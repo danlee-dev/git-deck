@@ -3,18 +3,55 @@
 import { useState } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { useRouter } from 'next/navigation';
-import { Github, Trash2, User } from 'lucide-react';
+import { Github, Trash2, User, Unlink, Loader2, RefreshCw } from 'lucide-react';
+import { authAPI } from '@/lib/api';
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, deleteAccount } = useAuthStore();
+  const { user, deleteAccount, fetchUser } = useAuthStore();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const [disconnectError, setDisconnectError] = useState<string | null>(null);
 
   const handleConnectGithub = () => {
     const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
     const redirectUri = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/github/callback`;
-    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=user,repo`;
+    // GitHub Actions 기능에 필요한 전체 권한
+    const scopes = [
+      'user',           // 유저 정보
+      'repo',           // 레포지토리 전체 접근
+      'read:org',       // 조직 정보 읽기
+      'workflow',       // 워크플로우 파일 수정 (.github/workflows)
+      'write:packages', // GitHub Packages 푸시 (Docker 등)
+      'read:packages',  // GitHub Packages 읽기
+    ].join(',');
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes}`;
+  };
+
+  const handleReconnectGithub = () => {
+    // Use same callback as connect - backend updates token for existing users
+    handleConnectGithub();
+  };
+
+  const handleDisconnectGithub = async () => {
+    if (!confirm('GitHub 연결을 해제하시겠습니까? 워크플로우 배포 등 GitHub 기능을 사용할 수 없게 됩니다.')) {
+      return;
+    }
+
+    setIsDisconnecting(true);
+    setDisconnectError(null);
+
+    try {
+      await authAPI.disconnectGithub();
+      await fetchUser();
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { detail?: string } } };
+      const message = err.response?.data?.detail || 'GitHub 연결 해제에 실패했습니다.';
+      setDisconnectError(message);
+    } finally {
+      setIsDisconnecting(false);
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -59,23 +96,56 @@ export default function SettingsPage() {
               GitHub 연동
             </h2>
             {user?.is_github_connected ? (
-              <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
-                <div className="flex items-center gap-3">
-                  <Github className="w-5 h-5 text-github-green dark:text-green-400" />
-                  <div>
-                    <p className="text-sm font-medium text-github-gray-900 dark:text-github-gray-100">
-                      GitHub 계정이 연결되었습니다
-                    </p>
-                    {user.github_username && (
-                      <p className="text-xs text-github-gray-600 dark:text-github-gray-400 mt-1">
-                        @{user.github_username}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md">
+                  <div className="flex items-center gap-3">
+                    <Github className="w-5 h-5 text-github-green dark:text-green-400" />
+                    <div>
+                      <p className="text-sm font-medium text-github-gray-900 dark:text-github-gray-100">
+                        GitHub 계정이 연결되었습니다
                       </p>
-                    )}
+                      {user.github_username && (
+                        <p className="text-xs text-github-gray-600 dark:text-github-gray-400 mt-1">
+                          @{user.github_username}
+                        </p>
+                      )}
+                    </div>
                   </div>
+                  <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded text-sm">
+                    연결됨
+                  </span>
                 </div>
-                <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded text-sm">
-                  연결됨
-                </span>
+
+                {disconnectError && (
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md text-sm text-red-600 dark:text-red-400">
+                    {disconnectError}
+                  </div>
+                )}
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleReconnectGithub}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-github-gray-700 dark:text-github-gray-300 bg-github-gray-100 dark:bg-github-gray-700 hover:bg-github-gray-200 dark:hover:bg-github-gray-600 rounded-md transition-colors"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    권한 갱신 (재연결)
+                  </button>
+                  <button
+                    onClick={handleDisconnectGithub}
+                    disabled={isDisconnecting}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-800 rounded-md transition-colors disabled:opacity-50"
+                  >
+                    {isDisconnecting ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Unlink className="w-4 h-4" />
+                    )}
+                    연결 해제
+                  </button>
+                </div>
+                <p className="text-xs text-github-gray-500 dark:text-github-gray-400">
+                  워크플로우 배포가 안 되면 "권한 갱신" 버튼을 눌러 GitHub 권한을 다시 받으세요.
+                </p>
               </div>
             ) : (
               <div className="p-4 bg-github-gray-50 dark:bg-github-gray-700/50 border border-github-gray-200 dark:border-github-gray-600 rounded-md">

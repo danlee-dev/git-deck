@@ -99,16 +99,16 @@ export default function PublicPostPage() {
       }
     } else {
       await navigator.clipboard.writeText(url);
-      alert('Link copied to clipboard!');
+      alert('링크가 클립보드에 복사되었습니다!');
     }
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
       month: 'long',
       day: 'numeric',
-      year: 'numeric',
     });
   };
 
@@ -116,7 +116,7 @@ export default function PublicPostPage() {
     const wordsPerMinute = 200;
     const words = content.split(/\s+/).length;
     const minutes = Math.ceil(words / wordsPerMinute);
-    return `${minutes} min read`;
+    return `${minutes}분 소요`;
   };
 
   const renderNav = () => (
@@ -171,16 +171,16 @@ export default function PublicPostPage() {
           <div className="text-center">
             <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-              Post not found
+              포스트를 찾을 수 없습니다
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mb-4">
-              This post may have been deleted or doesn't exist.
+              이 포스트가 삭제되었거나 존재하지 않습니다.
             </p>
             <Link
               href={`/blog/${username}`}
               className="text-blue-600 hover:underline"
             >
-              View {username}'s profile
+              {username}의 프로필 보기
             </Link>
           </div>
         </div>
@@ -266,7 +266,7 @@ export default function PublicPostPage() {
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shrink-0"
                 >
                   <Edit2 className="w-4 h-4" />
-                  Edit
+                  편집
                 </Link>
               )}
             </div>
@@ -308,7 +308,7 @@ export default function PublicPostPage() {
 
               <div className="flex items-center gap-1">
                 <Eye className="w-4 h-4" />
-                <span>{post.view_count} views</span>
+                <span>조회수 {post.view_count}</span>
               </div>
             </div>
 
@@ -344,7 +344,7 @@ export default function PublicPostPage() {
                   className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 >
                   <Share2 className="w-5 h-5" />
-                  <span>Share</span>
+                  <span>공유</span>
                 </button>
               </div>
 
@@ -352,7 +352,7 @@ export default function PublicPostPage() {
                 href={`/blog/${username}`}
                 className="text-sm text-blue-600 hover:underline"
               >
-                More from {post.author.github_username || post.author.username}
+                {post.author.github_username || post.author.username}의 다른 글
               </Link>
             </div>
           </div>

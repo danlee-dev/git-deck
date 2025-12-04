@@ -127,9 +127,9 @@ export default function UserBlogPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'long',
+    return date.toLocaleDateString('ko-KR', {
       year: 'numeric',
+      month: 'long',
     });
   };
 
@@ -188,13 +188,13 @@ export default function UserBlogPage() {
           <div className="text-center">
             <User className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-              User not found
+              사용자를 찾을 수 없습니다
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mb-4">
-              This user may have been deleted or doesn't exist.
+              이 사용자가 삭제되었거나 존재하지 않습니다.
             </p>
             <Link href="/blog" className="text-blue-600 hover:underline">
-              Back to feed
+              피드로 돌아가기
             </Link>
           </div>
         </div>
@@ -250,7 +250,7 @@ export default function UserBlogPage() {
                         : 'bg-blue-600 text-white hover:bg-blue-700'
                     }`}
                   >
-                    {isFollowing ? 'Following' : 'Follow'}
+                    {isFollowing ? '팔로잉' : '팔로우'}
                   </button>
                 )}
               </div>
@@ -258,14 +258,14 @@ export default function UserBlogPage() {
               {/* Stats */}
               <div className="flex items-center gap-4 mt-3 text-sm">
                 <span className="text-gray-600 dark:text-gray-400">
-                  <strong className="text-gray-900 dark:text-gray-100">{profile.followers_count}</strong> followers
+                  <strong className="text-gray-900 dark:text-gray-100">{profile.followers_count}</strong> 팔로워
                 </span>
                 <span className="text-gray-600 dark:text-gray-400">
-                  <strong className="text-gray-900 dark:text-gray-100">{profile.following_count}</strong> following
+                  <strong className="text-gray-900 dark:text-gray-100">{profile.following_count}</strong> 팔로잉
                 </span>
                 <span className="text-gray-600 dark:text-gray-400">
                   <FileText className="w-4 h-4 inline mr-1" />
-                  {profile.posts_count} posts
+                  {profile.posts_count}개 포스트
                 </span>
               </div>
             </div>
@@ -316,14 +316,14 @@ export default function UserBlogPage() {
             })}
 
             {!profile.is_github_connected && (!profile.social_links || profile.social_links.length === 0) && (
-              <span className="text-sm text-gray-400 dark:text-gray-500 italic">No links</span>
+              <span className="text-sm text-gray-400 dark:text-gray-500 italic">링크 없음</span>
             )}
           </div>
 
           {/* Joined Date */}
           <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
             <Calendar className="w-3.5 h-3.5" />
-            <span>Joined {formatDate(profile.created_at)}</span>
+            <span>{formatDate(profile.created_at)} 가입</span>
           </div>
         </div>
 
@@ -331,7 +331,7 @@ export default function UserBlogPage() {
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
           <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-              Posts ({posts.length})
+              포스트 ({posts.length})
             </h2>
           </div>
 
@@ -339,7 +339,7 @@ export default function UserBlogPage() {
             <div className="p-8 text-center">
               <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
               <p className="text-gray-500 dark:text-gray-400">
-                No published posts yet
+                아직 게시된 포스트가 없습니다
               </p>
             </div>
           ) : (

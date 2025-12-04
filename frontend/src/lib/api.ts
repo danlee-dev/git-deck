@@ -49,8 +49,10 @@ export const authAPI = {
   login: (data: { email: string; password: string }) =>
     api.post('/auth/login', data),
   me: () => api.get('/auth/me'),
-  connectGithub: (code: string) =>
-    api.post('/auth/connect-github', null, { params: { code } }),
+  connectGithub: (code: string, redirectUri?: string) =>
+    api.post('/auth/connect-github', null, { params: { code, redirect_uri: redirectUri } }),
+  disconnectGithub: () =>
+    api.post('/auth/disconnect-github'),
   deleteAccount: () => api.delete('/auth/account'),
   restoreAccount: (data: { email: string; password: string }) =>
     api.post('/auth/account/restore', data),
@@ -217,6 +219,68 @@ export const notificationAPI = {
     api.post('/notifications/mark-read', { notification_ids: notificationIds }),
   deleteNotification: (notificationId: string) =>
     api.delete(`/notifications/${notificationId}`),
+};
+
+// Workflow API
+export interface WorkflowData {
+  id: string;
+  name: string;
+  description?: string;
+  blocks: Array<{
+    id: string;
+    type: string;
+    position: { x: number; y: number };
+    config: Record<string, unknown>;
+    label?: string;
+  }>;
+  connections: Array<{
+    id: string;
+    sourceBlockId: string;
+    sourcePortId: string;
+    targetBlockId: string;
+    targetPortId: string;
+    animated?: boolean;
+  }>;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkflowListItem {
+  id: string;
+  name: string;
+  description?: string;
+  is_active: boolean;
+  blocks_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DeployResponse {
+  success: boolean;
+  path?: string;
+  url?: string;
+  actions_url?: string;
+  error?: string;
+}
+
+export const workflowAPI = {
+  list: () => api.get<WorkflowListItem[]>('/workflows'),
+  create: (data: { name: string; description?: string; blocks?: unknown[]; connections?: unknown[] }) =>
+    api.post<WorkflowData>('/workflows', data),
+  get: (id: string) => api.get<WorkflowData>(`/workflows/${id}`),
+  update: (id: string, data: Partial<{
+    name: string;
+    description: string;
+    blocks: unknown[];
+    connections: unknown[];
+    is_active: boolean;
+  }>) => api.put<WorkflowData>(`/workflows/${id}`, data),
+  delete: (id: string) => api.delete(`/workflows/${id}`),
+  deploy: (id: string, data: { repo_owner: string; repo_name: string; branch?: string }) =>
+    api.post<DeployResponse>(`/workflows/${id}/deploy`, data),
+  undeploy: (id: string, data: { repo_owner: string; repo_name: string; branch?: string }) =>
+    api.delete<{ success: boolean; error?: string }>(`/workflows/${id}/undeploy`, { data }),
 };
 
 export default api;

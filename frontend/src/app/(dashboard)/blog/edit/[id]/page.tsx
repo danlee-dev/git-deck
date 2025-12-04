@@ -109,7 +109,7 @@ export default function EditPostPage() {
       setCurrentPost(post);
     } catch (error) {
       console.error('Failed to fetch post:', error);
-      setError('Failed to load post');
+      setError('포스트를 불러오지 못했습니다');
     } finally {
       setIsLoading(false);
     }
@@ -187,7 +187,7 @@ export default function EditPostPage() {
       setLastSaved(new Date());
       setIsDirty(false);
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to save');
+      setError(err.response?.data?.detail || '저장에 실패했습니다');
     } finally {
       setIsSaving(false);
     }
@@ -222,7 +222,7 @@ export default function EditPostPage() {
       }
     } catch (error) {
       console.error('Failed to link repo:', error);
-      setError('Failed to link repository');
+      setError('저장소 연결에 실패했습니다');
     }
   };
 
@@ -235,7 +235,7 @@ export default function EditPostPage() {
 
   // Handle delete
   const handleDelete = async () => {
-    if (!confirm('Delete this post permanently?')) return;
+    if (!confirm('이 포스트를 영구적으로 삭제하시겠습니까?')) return;
 
     try {
       await blogAPI.posts.delete(postId);
@@ -249,7 +249,7 @@ export default function EditPostPage() {
   const handleDuplicate = async () => {
     try {
       const newPost = await blogAPI.posts.create({
-        title: `${title} (Copy)`,
+        title: `${title} (복사본)`,
         slug: `${title.toLowerCase().replace(/\s+/g, '-')}-copy-${Date.now()}`,
         content_md: content,
         content_blocks: contentBlocks,
@@ -267,9 +267,9 @@ export default function EditPostPage() {
     if (!lastSaved) return '';
     const now = new Date();
     const diff = Math.floor((now.getTime() - lastSaved.getTime()) / 1000);
-    if (diff < 60) return 'Saved just now';
-    if (diff < 3600) return `Saved ${Math.floor(diff / 60)}m ago`;
-    return `Saved at ${lastSaved.toLocaleTimeString()}`;
+    if (diff < 60) return '방금 저장됨';
+    if (diff < 3600) return `${Math.floor(diff / 60)}분 전 저장됨`;
+    return `${lastSaved.toLocaleTimeString()}에 저장됨`;
   };
 
   if (isLoading) {
@@ -287,12 +287,12 @@ export default function EditPostPage() {
               {isSaving ? (
                 <>
                   <Cloud className="w-4 h-4 animate-pulse" />
-                  <span>Saving...</span>
+                  <span>저장 중...</span>
                 </>
               ) : isDirty ? (
                 <>
                   <CloudOff className="w-4 h-4" />
-                  <span>Unsaved changes</span>
+                  <span>저장되지 않은 변경사항</span>
                 </>
               ) : (
                 <>
@@ -316,12 +316,12 @@ export default function EditPostPage() {
                 {status === 'published' ? (
                   <>
                     <Globe className="w-4 h-4 text-green-500" />
-                    <span>Published</span>
+                    <span>게시됨</span>
                   </>
                 ) : (
                   <>
                     <Lock className="w-4 h-4 text-gray-500" />
-                    <span>Draft</span>
+                    <span>임시저장</span>
                   </>
                 )}
                 <ChevronDown className="w-4 h-4" />
@@ -334,14 +334,14 @@ export default function EditPostPage() {
                     onClick={() => handleStatusChange('draft')}
                   >
                     <Lock className="w-4 h-4" />
-                    Draft
+                    임시저장
                   </button>
                   <button
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
                     onClick={() => handleStatusChange('published')}
                   >
                     <Globe className="w-4 h-4" />
-                    Publish
+                    게시
                   </button>
                 </div>
               )}
@@ -354,7 +354,7 @@ export default function EditPostPage() {
               className="flex items-center gap-2 px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save className="w-4 h-4" />
-              Save
+              저장
             </button>
 
             {/* More menu */}
@@ -376,14 +376,14 @@ export default function EditPostPage() {
                     onClick={handleDuplicate}
                   >
                     <Copy className="w-4 h-4" />
-                    Duplicate
+                    복제
                   </button>
                   <button
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                     onClick={handleDelete}
                   >
                     <Trash2 className="w-4 h-4" />
-                    Delete
+                    삭제
                   </button>
                 </div>
               )}
@@ -414,7 +414,7 @@ export default function EditPostPage() {
             type="text"
             value={title}
             onChange={handleTitleChange}
-            placeholder="Untitled"
+            placeholder="제목 없음"
             className="w-full text-4xl font-bold bg-transparent border-0 outline-none placeholder-gray-400 dark:placeholder-gray-600 text-gray-900 dark:text-gray-100 mb-4"
           />
 
